@@ -66,5 +66,6 @@ Never cut: validation at trust boundaries, error handling that prevents data los
 
 **Estado**
 
-- Fase actual: 0 (esqueleto). Actualizar aquí al cerrar cada fase.
+- Fase actual: 0 (esqueleto). En curso: esqueleto del MCP + FastAPI + navegador (spec aprobado, plan en preparación).
+- Actualizar aquí al cerrar cada fase.
 
