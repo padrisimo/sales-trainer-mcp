@@ -5,6 +5,7 @@ build/
 dist/
 wheels/
 *.egg-info
+MEMORY.md
 
 # Virtual environments
 .venv
