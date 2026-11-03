@@ -10,6 +10,7 @@ def test_avatar_smoke_script_passes() -> None:
         cwd=ROOT,
         capture_output=True,
         text=True,
+        check=False,
     )
     assert result.returncode == 0, result.stderr
     assert "avatar smoke ok" in result.stdout
