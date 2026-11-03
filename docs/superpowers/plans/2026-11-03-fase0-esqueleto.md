@@ -23,7 +23,7 @@
 - Create: `pyproject.toml`
 - Create: `src/sales_trainer/__init__.py`
 
-- [ ] **Step 1: Create `pyproject.toml`**
+- [x] **Step 1: Create `pyproject.toml`**
 
 Full content of `pyproject.toml`:
 
@@ -62,7 +62,7 @@ markers = [
 ]
 ```
 
-- [ ] **Step 2: Create `src/sales_trainer/__init__.py`**
+- [x] **Step 2: Create `src/sales_trainer/__init__.py`**
 
 Full content of `src/sales_trainer/__init__.py`:
 
@@ -70,19 +70,19 @@ Full content of `src/sales_trainer/__init__.py`:
 """Sales Trainer MCP package."""
 ```
 
-- [ ] **Step 3: Install dependencies**
+- [x] **Step 3: Install dependencies**
 
 Run: `uv sync`
 
 Expected: exit code 0; the command resolves and installs the locked dependencies and exits without errors.
 
-- [ ] **Step 4: Verify the package imports**
+- [x] **Step 4: Verify the package imports**
 
 Run: `uv run python -c "import sales_trainer"`
 
 Expected: exit code 0, no output.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add pyproject.toml src/sales_trainer/__init__.py
@@ -94,7 +94,7 @@ git commit -m "chore: scaffold uv project for sales-trainer-mcp"
 **Files:**
 - Create: `tests/unit/test_web_app.py`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Full content of `tests/unit/test_web_app.py`:
 
@@ -119,13 +119,13 @@ def test_root_echoes_session_token() -> None:
     assert "token-123" in response.text
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/unit/test_web_app.py -v`
 
 Expected: FAIL — exit code 1; key output line: `ModuleNotFoundError: No module named 'sales_trainer.web.app'`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add tests/unit/test_web_app.py
@@ -138,7 +138,7 @@ git commit -m "test: add failing tests for web placeholder"
 - Create: `src/sales_trainer/web/__init__.py`
 - Create: `src/sales_trainer/web/app.py`
 
-- [ ] **Step 1: Create the web package init and the FastAPI app**
+- [x] **Step 1: Create the web package init and the FastAPI app**
 
 Full content of `src/sales_trainer/web/__init__.py`:
 
@@ -176,13 +176,13 @@ async def root(session: str = "") -> HTMLResponse:
     return HTMLResponse(content=html, media_type="text/html")
 ```
 
-- [ ] **Step 2: Run the web tests to verify they pass**
+- [x] **Step 2: Run the web tests to verify they pass**
 
 Run: `uv run pytest tests/unit/test_web_app.py -v`
 
 Expected: exit code 0; key output line: `tests/unit/test_web_app.py . [100%] 2 passed`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/sales_trainer/web/__init__.py src/sales_trainer/web/app.py
@@ -194,7 +194,7 @@ git commit -m "feat: add FastAPI placeholder web app"
 **Files:**
 - Create: `tests/unit/test_mcp_server.py`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Full content of `tests/unit/test_mcp_server.py`:
 
@@ -232,13 +232,13 @@ def test_stop_is_safe_when_server_is_down(monkeypatch: pytest.MonkeyPatch) -> No
     assert mcp_server.stop() == {"running": False}
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/unit/test_mcp_server.py -v`
 
 Expected: FAIL — exit code 1; key output line: `ModuleNotFoundError: No module named 'sales_trainer.mcp_server'`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add tests/unit/test_mcp_server.py
@@ -250,7 +250,7 @@ git commit -m "test: add failing tests for MCP server skeleton"
 **Files:**
 - Create: `src/sales_trainer/mcp_server.py`
 
-- [ ] **Step 1: Create `src/sales_trainer/mcp_server.py`**
+- [x] **Step 1: Create `src/sales_trainer/mcp_server.py`**
 
 Full content of `src/sales_trainer/mcp_server.py`:
 
@@ -321,25 +321,25 @@ def main() -> None:
     mcp.run(transport="stdio")
 ```
 
-- [ ] **Step 2: Verify the MCP server module imports**
+- [x] **Step 2: Verify the MCP server module imports**
 
 Run: `uv run python -c "from sales_trainer import mcp_server; print(mcp_server.mcp.name)"`
 
 Expected: exit code 0; key output line: `sales-trainer`.
 
-- [ ] **Step 3: Run the MCP server tests**
+- [x] **Step 3: Run the MCP server tests**
 
 Run: `uv run pytest tests/unit/test_mcp_server.py -v`
 
 Expected: exit code 0; key output line: `tests/unit/test_mcp_server.py .... [100%] 4 passed`.
 
-- [ ] **Step 4: Run the linter**
+- [x] **Step 4: Run the linter**
 
 Run: `uv run ruff check .`
 
 Expected: exit code 0; key output line: `All checks passed!`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/sales_trainer/mcp_server.py
@@ -348,13 +348,13 @@ git commit -m "feat: add MCP server with uvicorn bootstrap"
 
 ### Task 6: Run the unit test suite and the linter
 
-- [ ] **Step 1: Run the full unit test suite**
+- [x] **Step 1: Run the full unit test suite**
 
 Run: `uv run pytest -v`
 
 Expected: exit code 0; summary line: `6 passed`.
 
-- [ ] **Step 2: Run the linter**
+- [x] **Step 2: Run the linter**
 
 Run: `uv run ruff check .`
 
@@ -365,7 +365,7 @@ Expected: exit code 0; key output line: `All checks passed!`.
 **Files:**
 - Create: `tests/e2e/test_web_server.py`
 
-- [ ] **Step 1: Create the end-to-end smoke test**
+- [x] **Step 1: Create the end-to-end smoke test**
 
 Full content of `tests/e2e/test_web_server.py`:
 
@@ -424,13 +424,13 @@ def test_web_server_serves_placeholder() -> None:
         proc.wait(timeout=10)
 ```
 
-- [ ] **Step 2: Run the end-to-end smoke test**
+- [x] **Step 2: Run the end-to-end smoke test**
 
 Run: `uv run pytest -m e2e -v`
 
 Expected: exit code 0; key output line: `tests/e2e/test_web_server.py . [100%] 1 passed`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add tests/e2e/test_web_server.py
@@ -439,13 +439,13 @@ git commit -m "test: add e2e smoke test for web server"
 
 ### Task 8: Run the full test suite and the linter
 
-- [ ] **Step 1: Run the full test suite**
+- [x] **Step 1: Run the full test suite**
 
 Run: `uv run pytest -v`
 
 Expected: exit code 0; summary line: `7 passed`.
 
-- [ ] **Step 2: Run the linter**
+- [x] **Step 2: Run the linter**
 
 Run: `uv run ruff check .`
 
@@ -453,7 +453,7 @@ Expected: exit code 0; key output line: `All checks passed!`.
 
 ### Task 9: Close out phase 0 documentation status
 
-- [ ] **Step 1: Update the phase status in `AGENTS.md`**
+- [x] **Step 1: Update the phase status in `AGENTS.md`**
 
 Edit `AGENTS.md`:
 
@@ -471,7 +471,7 @@ After:
 - Actualizar aquí al cerrar cada fase.
 ```
 
-- [ ] **Step 2: Create `docs/decisions.md`**
+- [x] **Step 2: Create `docs/decisions.md`**
 
 Full content of `docs/decisions.md`:
 
@@ -486,7 +486,7 @@ Full content of `docs/decisions.md`:
 - **Consecuencias:** el thread daemon construye la app FastAPI desde `src/sales_trainer/web/app.py` y arranca uvicorn sobre ella; bind `127.0.0.1`, puerto por defecto `8765` configurable con `SALES_TRAINER_PORT`.
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add AGENTS.md docs/decisions.md
