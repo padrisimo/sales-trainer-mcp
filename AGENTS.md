@@ -66,6 +66,6 @@ Never cut: validation at trust boundaries, error handling that prevents data los
 
 **Estado**
 
-- Fase actual: 0 (esqueleto). En curso: esqueleto del MCP + FastAPI + navegador (spec aprobado, plan en preparación).
+- Fase actual: 1 (avatar 3D). En curso: avatar 3D con idle y panel `/debug/visemes`.
 - Actualizar aquí al cerrar cada fase.
 
