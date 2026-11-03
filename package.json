@@ -2,6 +2,7 @@
   "name": "sales-trainer-mcp-web",
   "private": true,
   "version": "0.0.0",
+  "type": "module",
   "description": "JS vendorizado para la UI del Sales Trainer (sin CDN en runtime)",
   "dependencies": {
     "three": "0.187.0"
