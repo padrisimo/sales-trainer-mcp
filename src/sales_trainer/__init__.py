@@ -1,0 +1,1 @@
+"""Sales Trainer MCP package."""

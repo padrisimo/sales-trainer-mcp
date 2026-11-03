@@ -1,0 +1,35 @@
+[project]
+name = "sales-trainer-mcp"
+version = "0.1.0"
+description = "Entrenador de ventas por voz con avatar 3D, STT/TTS, LLM y evaluación"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp[cli]>=2.3.0",
+    "fastapi>=0.162.0",
+    "uvicorn[standard]>=0.54.0",
+    "pydantic>=2.14.2",
+    "httpx>=0.28.1",
+]
+
+[project.scripts]
+sales-trainer-mcp = "sales_trainer.mcp_server:main"
+
+[build-system]
+requires = ["uv_build>=0.12.24,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "sales_trainer"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "pytest-asyncio>=1.4.1.post1",
+    "ruff>=0.17.3",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "e2e: end-to-end tests that boot real server processes",
+]
