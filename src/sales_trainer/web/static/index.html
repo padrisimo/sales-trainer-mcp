@@ -2,9 +2,37 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Sales Trainer</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #101418;
+        overflow: hidden;
+      }
+      #avatar {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      #session {
+        position: absolute;
+        bottom: 8px;
+        left: 8px;
+        margin: 0;
+        font: 12px system-ui, sans-serif;
+        color: #46505c;
+      }
+    </style>
   </head>
   <body>
+    <canvas id="avatar"></canvas>
     <p id="session">session: __SESSION_TOKEN__</p>
+    <script type="module">
+      import { createScene } from "/static/js/scene.js";
+      createScene(document.getElementById("avatar"));
+    </script>
   </body>
 </html>
