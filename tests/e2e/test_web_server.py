@@ -1,5 +1,6 @@
 import subprocess
 import time
+import urllib.error
 import urllib.request
 
 import pytest
@@ -18,7 +19,7 @@ def _wait_for_server(timeout_seconds: float = 15.0) -> None:
                     return
             finally:
                 response.close()
-        except Exception:
+        except (urllib.error.URLError, OSError):
             time.sleep(0.2)
     raise RuntimeError("web server did not become ready in time")
 
