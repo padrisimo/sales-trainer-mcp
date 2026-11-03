@@ -9,7 +9,7 @@ export function createScene(canvas, options = {}) {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-  camera.position.set(0, 0.05, 3.4);
+  camera.position.set(0, 0.02, 4.4);
   camera.lookAt(0, 0, 0);
 
   scene.add(new THREE.HemisphereLight(0xffffff, 0x223344, 1.6));

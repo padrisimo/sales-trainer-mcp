@@ -11,5 +11,5 @@ wheels/
 
 # Environment variables
 .env
-# JS dependencies (Three.js se versiona ya vendorizado en static/js/vendor)
+# JS dependencies
 node_modules/

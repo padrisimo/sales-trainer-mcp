@@ -3,18 +3,27 @@ import { VISEMES, VISEME_SHAPES } from "./visemes.js";
 
 const MOUTH_RADIUS_X = 0.31;
 const MOUTH_RADIUS_Y = 0.17;
+// El cráneo es una esfera escalada; la boca se curva para no quedar enterrada en ella.
+const SKULL_SCALE = { x: 0.95, y: 1.1, z: 0.9 };
+const SKULL_RADIUS = 1;
+const MOUTH_CENTER = { y: -0.32, z: 0.88 };
+
+function skullSurfaceZ(x, y) {
+  const nx = x / SKULL_SCALE.x;
+  const ny = (y - MOUTH_CENTER.y) / SKULL_SCALE.y;
+  const squared = 1 - nx * nx - ny * ny;
+  return SKULL_RADIUS * SKULL_SCALE.z * Math.sqrt(Math.max(0, squared));
+}
 
 // Disco elíptico base de la boca: el morph target de cada viseme deforma esta base.
 function mouthBaseGeometry() {
   const geometry = new THREE.CircleGeometry(1, 24);
   const position = geometry.attributes.position;
   for (let i = 0; i < position.count; i += 1) {
-    position.setXYZ(
-      i,
-      position.getX(i) * MOUTH_RADIUS_X,
-      position.getY(i) * MOUTH_RADIUS_Y,
-      0,
-    );
+    const x = position.getX(i) * MOUTH_RADIUS_X;
+    const y = position.getY(i) * MOUTH_RADIUS_Y;
+    const z = skullSurfaceZ(x, y) - MOUTH_CENTER.z + 0.01;
+    position.setXYZ(i, x, y, z);
   }
   return geometry;
 }
@@ -46,11 +55,11 @@ export function createAvatar(options = {}) {
   head.add(skull);
 
   const hairMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(1.01, 32, 24, 0, Math.PI * 2, 0, Math.PI / 2),
+    new THREE.SphereGeometry(1.02, 32, 24, 0, Math.PI * 2, 0, Math.PI / 2.6),
     new THREE.MeshStandardMaterial({ color: hair, roughness: 1 }),
   );
   hairMesh.scale.set(0.96, 1.08, 0.91);
-  hairMesh.position.y = 0.12;
+  hairMesh.position.y = 0.3;
   head.add(hairMesh);
 
   const eyes = [];
@@ -59,7 +68,7 @@ export function createAvatar(options = {}) {
       new THREE.SphereGeometry(0.13, 20, 16),
       new THREE.MeshStandardMaterial({ color: 0xf7f7f7, roughness: 0.4 }),
     );
-    eye.position.set(x, 0.14, 0.74);
+    eye.position.set(x, 0.1, 0.76);
     const pupil = new THREE.Mesh(
       new THREE.SphereGeometry(0.06, 16, 12),
       new THREE.MeshStandardMaterial({ color: 0x1d2733, roughness: 0.3 }),
@@ -75,7 +84,7 @@ export function createAvatar(options = {}) {
       new THREE.BoxGeometry(0.32, 0.05, 0.06),
       new THREE.MeshStandardMaterial({ color: hair, roughness: 1 }),
     );
-    brow.position.set(x, 0.4, 0.78);
+    brow.position.set(x, 0.34, 0.83);
     head.add(brow);
   }
 
@@ -98,7 +107,7 @@ export function createAvatar(options = {}) {
       side: THREE.DoubleSide,
     }),
   );
-  mouth.position.set(0, -0.34, 0.82);
+  mouth.position.set(0, MOUTH_CENTER.y, MOUTH_CENTER.z);
   mouth.updateMorphTargets();
   head.add(mouth);
 
