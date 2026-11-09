@@ -991,19 +991,19 @@ git commit -m "test: add e2e coverage for tts playback and lip sync"
 
 ## Task 8: Full suite and linter
 
-- [ ] **Step 1: Run everything**
+- [x] **Step 1: Run everything**
 
 Run: `uv run pytest -v`
 
 Expected: exit code 0; `30 passed` (11 existing + 7 visemes + 3 mock + 3 azure + 4 route + 1 timeline JS + 1 e2e).
 
-- [ ] **Step 2: Lint**
+- [x] **Step 2: Lint**
 
 Run: `uv run ruff check .`
 
 Expected: exit code 0; `All checks passed!`.
 
-- [ ] **Step 3: Fix anything the two commands flag, then re-run both until green.**
+- [x] **Step 3: Fix anything the two commands flag, then re-run both until green.**
 
 ---
 
