@@ -66,6 +66,6 @@ Never cut: validation at trust boundaries, error handling that prevents data los
 
 **Estado**
 
-- Fase actual: 1 (avatar 3D). En curso: avatar 3D con idle y panel `/debug/visemes`.
+- Fase actual: 2 (TTS con visemas). En curso: TTS con línea temporal de visemas sincronizada.
 - Actualizar aquí al cerrar cada fase.
 
