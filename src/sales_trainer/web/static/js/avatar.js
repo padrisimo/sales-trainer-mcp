@@ -3,7 +3,7 @@ import { VISEMES, VISEME_SHAPES } from "./visemes.js";
 
 const MOUTH_RADIUS_X = 0.31;
 const MOUTH_RADIUS_Y = 0.17;
-// El cráneo es una esfera escalada; la boca se curva para no quedar enterrada en ella.
+// The skull is a scaled sphere; the mouth curves so it does not get buried in it.
 const SKULL_SCALE = { x: 0.95, y: 1.1, z: 0.9 };
 const SKULL_RADIUS = 1;
 const MOUTH_CENTER = { y: -0.32, z: 0.88 };
@@ -15,7 +15,7 @@ function skullSurfaceZ(x, y) {
   return SKULL_RADIUS * SKULL_SCALE.z * Math.sqrt(Math.max(0, squared));
 }
 
-// Disco elíptico base de la boca: el morph target de cada viseme deforma esta base.
+// Elliptical mouth base disc: each viseme's morph target deforms this base.
 function mouthBaseGeometry() {
   const geometry = new THREE.CircleGeometry(1, 24);
   const position = geometry.attributes.position;
@@ -35,8 +35,8 @@ function mouthShapeArray(base, shape) {
   for (let i = 0; i < base.length; i += 3) {
     const x = base[i] * scaleX;
     const y = base[i + 1] * scaleY;
-    // La z se recalcula con la curvatura del cráneo en la posición ya deformada,
-    // si se arrastrara la z base los visemes abiertos se hundirían en la cabeza.
+    // z is recomputed from the skull curvature at the already-deformed position;
+    // reusing the base z would sink open visemes into the head.
     out[i] = x;
     out[i + 1] = y;
     out[i + 2] = skullSurfaceZ(x, y) - MOUTH_CENTER.z + 0.01 + shape.round * 0.08;

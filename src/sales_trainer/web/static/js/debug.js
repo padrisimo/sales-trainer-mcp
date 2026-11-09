@@ -7,7 +7,7 @@ const status = document.getElementById("status");
 
 const scene = createScene(canvas);
 
-// Estado observable por el e2e: ready, active y la lista de visemes.
+// State observable by the e2e: ready, active and the viseme list.
 const state = { ready: false, active: "sil", visemes: VISEMES };
 window.avatarDebug = state;
 

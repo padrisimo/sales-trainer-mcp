@@ -36,7 +36,7 @@ export function createScene(canvas, options = {}) {
     const dt = clock.getDelta();
     const t = clock.elapsedTime;
 
-    // Idle: no toca los morph targets de visema, así el panel de depuración manda.
+    // Idle: never touches the viseme morph targets, so the debug panel stays in control.
     avatar.head.position.y = Math.sin(t * 1.2) * 0.012;
     avatar.head.rotation.y = Math.sin(t * 0.5) * 0.07;
     avatar.head.rotation.x = Math.sin(t * 0.9) * 0.03;

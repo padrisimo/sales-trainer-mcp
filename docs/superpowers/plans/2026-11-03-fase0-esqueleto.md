@@ -1,12 +1,12 @@
-# Fase 0: Esqueleto del MCP + FastAPI Implementation Plan
+# Phase 0: MCP + FastAPI Skeleton Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers-subagent-driven-development (recommended) or superpowers-executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Desde una sesión de opencode o Claude Code, invocar la herramienta MCP `sales_trainer_start` arranque el servidor web local, abra el navegador en `http://127.0.0.1:PORT/?session=<token>` y devuelva `{ url, session_id }`, con las herramientas `sales_trainer_status` y `sales_trainer_stop` operables como mínimo.
+**Goal:** From an opencode or Claude Code session, invoking the `sales_trainer_start` MCP tool starts the local web server, opens the browser at `http://127.0.0.1:PORT/?session=<token>` and returns `{ url, session_id }`, with `sales_trainer_status` and `sales_trainer_stop` operable at a minimum level.
 
-**Architecture:** El servidor MCP (SDK `mcp`, clase `MCPServer`, transporte stdio) corre en el proceso de la host (opencode / Claude Code); un thread daemon arranca uvicorn sobre la aplicación FastAPI definida en `src/sales_trainer/web/app.py`, con un event loop dedicado en ese thread, sobre `127.0.0.1` con el puerto configurable por variable de entorno (default `8765`). El placeholder HTML se sirve en `GET /` y el token de sesión es un UUID incluido en el query string de la URL.
+**Architecture:** The MCP server (`mcp` SDK, `MCPServer` class, stdio transport) runs in the host process (opencode / Claude Code); a daemon thread starts uvicorn over the FastAPI application defined in `src/sales_trainer/web/app.py`, with a dedicated event loop in that thread, on `127.0.0.1` with the port configurable through an environment variable (default `8765`). The HTML placeholder is served at `GET /` and the session token is a UUID carried in the URL query string.
 
-**Tech Stack:** Python 3.11+, SDK `mcp` (>=2.3.0, clase `MCPServer`), FastAPI, uvicorn[standard], pydantic v2, httpx; pytest, pytest-asyncio y ruff; uv como gestor de entorno. El transporte MCP es stdio (stdout reservado al protocolo, logs a stderr); el servidor web se publica solo en `127.0.0.1`.
+**Tech Stack:** Python 3.11+, `mcp` SDK (>=2.3.0, `MCPServer` class), FastAPI, uvicorn[standard], pydantic v2, httpx; pytest, pytest-asyncio and ruff; uv as the environment manager. The MCP transport is stdio (stdout reserved for the protocol, logs to stderr); the web server binds only to `127.0.0.1`.
 
 ---
 
@@ -460,15 +460,15 @@ Edit `AGENTS.md`:
 Before:
 
 ```
-- Fase actual: 0 (esqueleto). En curso: esqueleto del MCP + FastAPI + navegador (spec aprobado, plan en preparación).
-- Actualizar aquí al cerrar cada fase.
+- Current phase: 0 (skeleton). In progress: MCP + FastAPI + browser skeleton (spec approved, plan in preparation).
+- Update here when closing each phase.
 ```
 
 After:
 
 ```
-- Fase actual: 1 (avatar 3D). En curso: avatar 3D con idle y panel `/debug/visemes`.
-- Actualizar aquí al cerrar cada fase.
+- Current phase: 1 (3D avatar). In progress: 3D avatar with idle and `/debug/visemes` panel.
+- Update here when closing each phase.
 ```
 
 - [x] **Step 2: Create `docs/decisions.md`**
@@ -476,14 +476,14 @@ After:
 Full content of `docs/decisions.md`:
 
 ```markdown
-# Decisiones del proyecto
+# Project decisions
 
-## 2026-11-03 — Fase 0: arranque del servidor web (esqueleto)
+## 2026-11-03 — Phase 0: starting the web server (skeleton)
 
-- **Decisión:** el servidor web (FastAPI + uvicorn) arranca en un thread daemon dentro del proceso MCP (SDK `mcp`, clase `MCPServer`, transporte stdio).
-- **Alternativa descartada:** proceso hijo del MCP.
-- **Motivo:** menor complejidad de gestión en Fase 0; la memoria del proyecto contempla «arranca en un hilo o proceso hijo».
-- **Consecuencias:** el thread daemon construye la app FastAPI desde `src/sales_trainer/web/app.py` y arranca uvicorn sobre ella; bind `127.0.0.1`, puerto por defecto `8765` configurable con `SALES_TRAINER_PORT`.
+- **Decision:** the web server (FastAPI + uvicorn) starts in a daemon thread inside the MCP process (`mcp` SDK, `MCPServer` class, stdio transport).
+- **Discarded alternative:** child process of the MCP server.
+- **Reason:** less management complexity in Phase 0; the project memory states "starts in a thread or child process".
+- **Consequences:** the daemon thread builds the FastAPI app from `src/sales_trainer/web/app.py` and runs uvicorn on it; bind `127.0.0.1`, default port `8765` configurable with `SALES_TRAINER_PORT`.
 ```
 
 - [x] **Step 3: Commit**
@@ -497,11 +497,11 @@ git commit -m "docs: close out fase 0"
 
 ## Spec coverage
 
-- Acceptance criterion 1 (`sales_trainer_start(level, product_brief, language)` arranca el servidor web si no está activo): created in Task 5 (`start` + `_ensure_server`).
-- Acceptance criterion 2 (abre el navegador en `http://127.0.0.1:PORT/?session=<token>`): created in Task 5 (`webbrowser.open` with `build_url`).
-- Acceptance criterion 3 (devuelve `{ url, session_id }`): created in Task 5, covered by tests in Task 4 and verified in Task 5.
-- Acceptance criterion 4 (`sales_trainer_status` / `sales_trainer_stop` operables como mínimo): created in Task 5, covered by tests in Task 4.
-- Bind `127.0.0.1`, puerto configurable por variable de entorno (default `8765`), UUID de sesión, transporte stdio con logs a stderr, placeholder en `GET /`: created in Tasks 3-5.
+- Acceptance criterion 1 (`sales_trainer_start(level, product_brief, language)` starts the web server if it is not active): created in Task 5 (`start` + `_ensure_server`).
+- Acceptance criterion 2 (opens the browser at `http://127.0.0.1:PORT/?session=<token>`): created in Task 5 (`webbrowser.open` with `build_url`).
+- Acceptance criterion 3 (returns `{ url, session_id }`): created in Task 5, covered by tests in Task 4 and verified in Task 5.
+- Acceptance criterion 4 (`sales_trainer_status` / `sales_trainer_stop` operable at a minimum level): created in Task 5, covered by tests in Task 4.
+- Bind `127.0.0.1`, port configurable through an environment variable (default `8765`), session UUID, stdio transport with logs to stderr, placeholder at `GET /`: created in Tasks 3-5.
 
 ## Execution order
 

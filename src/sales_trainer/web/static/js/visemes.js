@@ -1,5 +1,5 @@
-// Conjunto interno de visemas Oculus. Estos 15 nombres son el contrato con la
-// Fase 2 (fonemas -> visema) y con los morph targets de avatar.js.
+// Internal Oculus viseme set. These 15 names are the contract with Phase 2
+// (phonemes -> viseme) and with the avatar.js morph targets.
 export const VISEMES = [
   "sil",
   "PP",
@@ -18,7 +18,7 @@ export const VISEMES = [
   "U",
 ];
 
-// Forma de la boca por viseme: apertura, anchura y redondeo, de 0 a 1.
+// Mouth shape per viseme: aperture, width and rounding, from 0 to 1.
 export const VISEME_SHAPES = {
   sil: { open: 0.0, wide: 0.5, round: 0.0 },
   PP: { open: 0.0, wide: 0.55, round: 0.0 },
@@ -37,7 +37,7 @@ export const VISEME_SHAPES = {
   U: { open: 0.3, wide: 0.2, round: 1.0 },
 };
 
-// Vector de pesos one-hot alineado con VISEMES.
+// One-hot weight vector aligned with VISEMES.
 export function weightsFor(name) {
   return VISEMES.map((viseme) => (viseme === name ? 1 : 0));
 }
