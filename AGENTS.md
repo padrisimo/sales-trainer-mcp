@@ -68,5 +68,5 @@ Never cut: validation at trust boundaries, error handling that prevents data los
 
 **Status**
 
-- Current phase: 2 (TTS with visemes). In progress: TTS with a synchronized viseme timeline.
+- Current phase: 3 (microphone, VAD and STT). In progress: microphone capture, VAD and STT with timestamps.
 - Update here when closing each phase.

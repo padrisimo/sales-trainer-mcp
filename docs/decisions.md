@@ -19,3 +19,13 @@
 - **Known limit:** the avatar is a stylized low-poly head with no teeth or tongue; `FF` and `TH` differ by aperture, not by labiodental or dental contact. To be revisited if the Phase 2 visual criterion demands it.
 - **Known limit:** the Playwright e2e does get WebGL working headless with `--use-angle=swiftshader`; it checks DOM, state and absence of console errors, not aesthetics.
 - **Environment:** the workflow subagents were denied in the session, so spec, plan and implementation were executed inline instead of one implementer per task.
+
+## 2026-11-03 — Phase 2: Azure as the TTS provider
+
+- **Decision:** Phase 2 uses Azure Speech as the real TTS provider (native `viseme_received` events with audio offsets in ticks) plus an explicit mock provider for tests.
+- **Discarded alternative:** local Piper/Kokoro in this phase, which would need forced alignment with torch to obtain real phoneme timings.
+- **Reason:** Azure is the only source of true per-viseme offsets anchored to the audio it just produced, which is exactly what the 40 ms criterion needs; the offline provider gets its own phase.
+- **Consequences:** `SALES_TRAINER_TTS=azure|mock` selects the provider; the mock is never a silent fallback. Ticks are converted with `ticks / 10_000`. Audio travels inline as base64, capped at 400 characters per request.
+- **Known limit:** Azure viseme IDs 0-21 do not cover every Spanish phoneme; `h`, `l` and `r` land on the closest shape and the mapping is explicit in `voice/visemes.py`.
+- **Verified (2026-11-09, real Azure key):** real synthesis with `es-ES-ElviraNeural` returned a 24 kHz 16-bit mono WAV, 4.68 s of audio for a Spanish sentence, 35 viseme events on a monotonic timeline whose last event falls inside the audio duration. A headless Chromium run of `/debug/tts` against the real provider produced 32 visemes over 11 distinct shapes in an order consistent with the sentence, playback ended on its own, and there were no console errors.
+- **Known limit:** the ear-and-eye judgement of mouth coherence is still a manual check, and the automated suite itself keeps running on the mock provider (no key, no network).
