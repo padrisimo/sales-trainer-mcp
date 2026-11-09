@@ -23,7 +23,7 @@
 - Create: `src/sales_trainer/voice/visemes.py`
 - Create: `tests/unit/test_visemes.py`
 
-- [ ] **Step 1: Create the package files**
+- [x] **Step 1: Create the package files**
 
 `src/sales_trainer/voice/__init__.py`:
 
@@ -31,7 +31,7 @@
 """Voice pipeline: TTS, visemes, and later STT and prosody."""
 ```
 
-- [ ] **Step 2: Create `src/sales_trainer/voice/tts/base.py`**
+- [x] **Step 2: Create `src/sales_trainer/voice/tts/base.py`**
 
 ```python
 from typing import Protocol
@@ -59,7 +59,7 @@ class TTSProvider(Protocol):
     def synthesize(self, text: str, voice: str | None = None) -> TTSResult: ...
 ```
 
-- [ ] **Step 3: Create `src/sales_trainer/voice/visemes.py`**
+- [x] **Step 3: Create `src/sales_trainer/voice/visemes.py`**
 
 ```python
 from sales_trainer.voice.tts.base import VisemeEvent
@@ -129,7 +129,7 @@ def smooth(events: list[VisemeEvent], merge_window_ms: int = MERGE_WINDOW_MS) ->
     return out
 ```
 
-- [ ] **Step 4: Write `tests/unit/test_visemes.py`**
+- [x] **Step 4: Write `tests/unit/test_visemes.py`**
 
 ```python
 import re
@@ -192,13 +192,13 @@ def test_python_and_javascript_viseme_lists_match() -> None:
     assert js_names == VISEMES
 ```
 
-- [ ] **Step 5: Run the tests**
+- [x] **Step 5: Run the tests**
 
 Run: `uv run pytest tests/unit/test_visemes.py -v`
 
 Expected: exit code 0; `7 passed`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/sales_trainer/voice tests/unit/test_visemes.py
