@@ -881,7 +881,7 @@ git commit -m "feat: add tts debug page"
 **Files:**
 - Create: `tests/e2e/test_tts_page.py`
 
-- [ ] **Step 1: Create the test**
+- [x] **Step 1: Create the test**
 
 ```python
 import os
@@ -974,13 +974,13 @@ def test_debug_tts_page_speaks_and_moves_the_mouth() -> None:
         proc.wait(timeout=10)
 ```
 
-- [ ] **Step 2: Run it**
+- [x] **Step 2: Run it**
 
 Run: `uv run pytest -m e2e -v`
 
 Expected: exit code 0; `3 passed`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add tests/e2e/test_tts_page.py
