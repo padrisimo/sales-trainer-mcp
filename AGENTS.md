@@ -31,41 +31,42 @@ Never cut: validation at trust boundaries, error handling that prevents data los
 
 (Yes, this file also applies to agents working on the ponytail repo itself. Especially to them.)
 
-### Sales Trainer MCP — memoria del proyecto
+### Sales Trainer MCP — project memory
 
-**Qué es.** Servidor MCP en Python que abre en el navegador un entrenador de ventas por voz: avatar 3D con visemas reales, TTS y STT, tres personajes de dificultad creciente, termómetro de éxito, reintentos e informes `.txt` descargables.
+**What it is.** A Python MCP server that opens a voice sales trainer in the browser: a 3D avatar with real visemes, TTS and STT, three characters of increasing difficulty, a success gauge, retries and downloadable `.txt` reports.
 
-**Reglas innegociables**
+**Non-negotiable rules**
 
-- stdout es solo para el protocolo MCP; logs a stderr o fichero.
-- Los visemas se derivan de fonemas reales con tiempos reales. Nunca animación por amplitud ni aleatoria.
-- El juez LLM es una llamada separada de la del personaje. La entrega (dicción, entonación, ritmo) se mide con señales acústicas y de transcripción, no con opinión del LLM.
-- Pesos, umbrales y personajes viven en YAML (`config/scoring.yaml`, `characters/*.yaml`), no en el código.
-- Servidor solo en `127.0.0.1`, con token de sesión y validación de `Origin`.
-- Sin CDN en tiempo de ejecución. Audio sin guardar salvo `SAVE_AUDIO=true`.
-- El informe `.txt` se genera siempre, y si se pierde explica por qué.
-- Versiones de dependencias fijadas. No inventar APIs: consultar la documentación.
+- stdout is only for the MCP protocol; logs go to stderr or a file.
+- Visemes are derived from real phonemes with real timings. Never amplitude-driven or random animation.
+- The LLM judge is a call separate from the character's. Delivery (diction, intonation, pace) is measured with acoustic and transcription signals, not with the LLM's opinion.
+- Weights, thresholds and characters live in YAML (`config/scoring.yaml`, `characters/*.yaml`), not in code.
+- Server only on `127.0.0.1`, with a session token and `Origin` validation.
+- No CDN at runtime. Audio is not stored unless `SAVE_AUDIO=true`.
+- The `.txt` report is always generated, and when it is missing it explains why.
+- Dependency versions pinned. Do not invent APIs: consult the documentation.
 
-**Comandos**
+**Commands**
 
-- Instalar: `uv sync`
-- Ejecutar el MCP: `uv run sales-trainer-mcp`
+- Install: `uv sync`
+- Run the MCP: `uv run sales-trainer-mcp`
 - Tests: `uv run pytest` · E2E: `uv run pytest -m e2e` · Lint: `uv run ruff check .`
+- JS geometry smoke test: `node tests/js/avatar_smoke.mjs` (also runs inside pytest)
+- Re-vendor frontend deps: `npm install` (Three.js is copied into `src/sales_trainer/web/static/js/vendor/`)
 
-**Personajes**
+**Characters**
 
-- Nivel 1 Marta (receptiva): inicio 50, umbral 75, 10 turnos.
-- Nivel 2 Javier (escéptico): inicio 30, umbral 80, 10 turnos.
-- Nivel 3 Carmen (sin interés): inicio 10, umbral 85, 8 turnos, cuelga en 0.
+- Level 1 Marta (receptive): start 50, threshold 75, 10 turns.
+- Level 2 Javier (skeptical): start 30, threshold 80, 10 turns.
+- Level 3 Carmen (uninterested): start 10, threshold 85, 8 turns, hangs up at 0.
 
-**Convenciones**
+**Conventions**
 
-- Python 3.11+, type hints, `ruff`, pydantic v2 para todos los contratos.
-- Un commit por fase; tests en verde antes de avanzar.
-- Decisiones y límites conocidos en `docs/decisions.md`; plan en `docs/PLAN.md`.
+- Python 3.11+, type hints, `ruff`, pydantic v2 for every contract.
+- One commit per phase; tests green before moving on.
+- Decisions and known limits in `docs/decisions.md`; plan in `docs/PLAN.md`.
 
-**Estado**
+**Status**
 
-- Fase actual: 2 (TTS con visemas). En curso: TTS con línea temporal de visemas sincronizada.
-- Actualizar aquí al cerrar cada fase.
-
+- Current phase: 2 (TTS with visemes). In progress: TTS with a synchronized viseme timeline.
+- Update here when closing each phase.

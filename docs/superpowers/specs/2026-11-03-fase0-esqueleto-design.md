@@ -1,85 +1,93 @@
-# Design — Fase 0: Esqueleto del MCP + FastAPI + navegador
+# Design — Phase 0: MCP skeleton + FastAPI + browser
 
-- **Fecha:** 2026-11-03
-- **Tema:** fase0-esqueleto
-- **Estado:** Aprobado por el usuario
+- **Date:** 2026-11-03
+- **Topic:** fase0-esqueleto
+- **Status:** Approved by the user
 
 ## Context
 
-El repositorio `sales-trainer-mcp` se encuentra en su fase inicial de materialización: todavía no contiene código fuente (no existen `src/`, `pyproject.toml`, `tests/`), solo la documentación de proyecto (`MEMORY.md`, `AGENTS.md`), la licencia y este spec.
+The `sales-trainer-mcp` repository is at the initial materialization stage: it still contains no source code (no `src/`, `pyproject.toml`, `tests/`), only the project documentation (`MEMORY.md`, `AGENTS.md`), the license and this spec.
 
-`MEMORY.md` define el producto y la arquitectura prevista:
+`MEMORY.md` defines the product and the planned architecture:
 
-- Producto: entrenador de ventas por voz con avatar 3D, STT/TTS, LLM, evaluación y termómetro de temperatura.
-- Arquitectura prevista:
+- Product: voice sales trainer with a 3D avatar, STT/TTS, LLM, evaluation and a temperature gauge.
+- Planned architecture:
 
 ```
 opencode / Claude Code --stdio--> sales_trainer MCP server (FastMCP)
-                                   | arranca en un hilo o proceso hijo
+                                   | starts in a thread or child process
                                    v
-                        FastAPI + uvicorn (127.0.0.1:PUERTO)
-                                   | HTTP estático + WebSocket
+                        FastAPI + uvicorn (127.0.0.1:PORT)
+                                   | static HTTP + WebSocket
                                    v
-                Navegador: Three.js + AudioWorklet + UI
+                 Browser: Three.js + AudioWorklet + UI
 ```
 
-- Reglas innegociables: stdout reservado al protocolo MCP (los logs van a stderr o fichero); el servidor web solo se publica en `127.0.0.1`; token de sesión aleatorio en la URL con validación de `Origin`; versiones de dependencias fijadas; no inventar APIs; los pesos y personajes viven en YAML, no en código.
-
-Los documentos de plan (`docs/PLAN.md`) y de decisiones (`docs/decisions.md`) aún no existen. El plan de trabajo distribuye el producto en fases; la Fase 0 es la primera entrega vertical y su criterio aprobado es: «desde opencode o Claude Code, una llamada a `sales_trainer_start` abre el navegador con una página y devuelve la URL».
+- Critical rule: with the stdio transport, **stdout is reserved for the MCP protocol**; all logs go to stderr or a file.
 
 ## Goal
 
-La Fase 0 del proyecto Sales Trainer MCP consiste en que, desde una sesión de opencode o Claude Code, invocar la herramienta MCP `sales_trainer_start` arranque el servidor web local si no está activo, abra el navegador en `http://127.0.0.1:PORT/?session=<token>` y devuelva `{ url, session_id }`, con las herramientas MCP `sales_trainer_status` y `sales_trainer_stop` operables como mínimo.
+Provide the Phase 0 skeleton: an MCP server over stdio that, when the `sales_trainer_start` tool is invoked, starts a local FastAPI web server if it is not already running, opens the browser at `http://127.0.0.1:PORT/?session=<token>` and returns the URL and the session identifier.
 
 ## Acceptance Criteria
 
-1. `sales_trainer_start(level, product_brief, language)` arranca el servidor web si no está activo.
-2. Abre el navegador en `http://127.0.0.1:PORT/?session=<token>`.
-3. Devuelve `{ url, session_id }`.
-4. `sales_trainer_status` / `sales_trainer_stop` operables (mínimo).
+1. `sales_trainer_start(level, product_brief, language)` starts the web server if it is not active.
+2. It opens the browser at `http://127.0.0.1:PORT/?session=<token>`.
+3. It returns `{ url, session_id }`.
+4. `sales_trainer_status` and `sales_trainer_stop` are usable at a minimum level.
+5. The port is configurable through `SALES_TRAINER_PORT` (default `8765`) and the bind address is `127.0.0.1`.
 
 ## Non-Goals
 
-- Avatar 3D, audio, STT/TTS, LLM, evaluación, base de datos, UI definitiva y WebSocket funcional.
-- Cualquier conversación o bucle de voz completo: el placeholder web no incluye avatar, audio ni reconocimiento de voz.
-- Persistencia de sesiones o historial en esta fase.
+- 3D avatar, audio, STT/TTS, LLM, evaluation, database, final UI and a working WebSocket. All of it arrives in later phases.
+- Session persistence: the session token is generated per call and is not stored.
+- Authentication beyond the random session token in the URL.
 
 ## Proposed Architecture
 
-- **Bootstrap del servidor web:** decisión aprobada, Opción A — el servidor web (FastAPI + uvicorn) arranca en un thread daemon dentro del mismo proceso que ejecuta el servidor MCP (FastMCP, transporte stdio). Motivo: menor complejidad de gestión que un proceso hijo en Fase 0; la memoria del proyecto contempla explícitamente «arranca en un hilo o proceso hijo».
-- **Ubicación del bootstrap:** el thread daemon construye la aplicación FastAPI a partir de `src/sales_trainer/web/app.py` y arranca uvicorn sobre ella.
-- **Bind y puerto:** `127.0.0.1`; puerto configurable mediante variable de entorno, con valor por defecto de `8765`.
-- **Placeholder web:** respuesta HTML mínima en `GET /`; la UI real se sustituye en fases posteriores.
-- **Transporte MCP:** stdio (FastMCP); stdout reservado al protocolo; logs a stderr.
-- **Sesión:** token UUID incluido en la query string de la URL (`?session=<token>`).
-- **Browser:** apertura mediante `webbrowser.open(url)`.
+- **MCP layer:** `src/sales_trainer/mcp_server.py` uses the `mcp` SDK (`MCPServer`, transport stdio) and exposes `sales_trainer_start`, `sales_trainer_status` and `sales_trainer_stop`. `main()` runs `mcp.run(transport="stdio")`.
+- **Web layer:** `src/sales_trainer/web/app.py` holds the FastAPI `app`. In this phase it serves a single `GET /` that returns a minimal HTML placeholder and echoes the `session` query parameter.
+- **Bootstrap:** `_ensure_server()` builds a `uvicorn.Server` over the FastAPI app and runs it in a daemon thread named `uvicorn-sales-trainer`, waiting until `server.started` is true. Reused if the thread is alive.
+- **Rationale for the daemon thread (Option A):** it is the smallest mechanism that meets the criterion, and the project memory explicitly allows "a thread or a child process". A child process would be cleaner long term but adds lifecycle and IPC work that Phase 0 does not need.
+- **Shutdown:** `sales_trainer_stop` sets `should_exit` on the uvicorn server and joins the thread with a timeout.
+- **Browser:** `webbrowser.open(url)`.
+- **Package layout:** `pyproject.toml` with `module-name = "sales_trainer"` for `uv_build`, so the code lives in `src/sales_trainer/`.
 
 ## Files To Change
 
-- Create: `src/sales_trainer/mcp_server.py` — servidor MCP (FastMCP), transporte stdio, tools `start` / `status` / `stop`.
-- Create: `src/sales_trainer/web/app.py` — aplicación FastAPI.
-- Modify: ninguno en esta fase (el repositorio no contiene aún código fuente que editar).
+**New:**
+- `pyproject.toml` — project metadata, pinned dependencies, `sales-trainer-mcp` script, `uv_build` backend, pytest config (`testpaths = ["tests"]`, marker `e2e`).
+- `src/sales_trainer/__init__.py`
+- `src/sales_trainer/mcp_server.py` — `MCPServer`, `build_url`, `_ensure_server`, the three tools and `main`.
+- `src/sales_trainer/web/__init__.py`
+- `src/sales_trainer/web/app.py` — FastAPI app with the placeholder `GET /`.
+- `tests/unit/test_web_app.py` — placeholder returns 200 text/html and echoes the token.
+- `tests/unit/test_mcp_server.py` — `build_url`, `start`, `status` and `stop` behaviour.
+- `tests/e2e/test_web_server.py` — boots uvicorn through the CLI and asserts the page.
+
+**Modified:** none (the repository had no code).
 
 ## Testing Strategy
 
-- La verificación de esta fase se apoya en la suite definida en `MEMORY.md`: tests unitarios, de integración y E2E con Playwright.
-- En Fase 0 se verifica el comportamiento mínimo del esqueleto: que las tools `start` / `status` / `stop` entregan el payload esperado (`{ url, session_id }`) y que el servidor web responde en el placeholder de `GET /`.
-- Los tests del flujo completo (avatar, audio, STT/TTS, LLM) quedan para fases posteriores y no forman parte de esta fase.
+- **Unit:** `TestClient` against the FastAPI app for the placeholder page; direct calls to the MCP module functions with `monkeypatch` for the server bootstrap and `webbrowser.open`, so no browser and no real server are needed.
+- **E2E:** a subprocess runs `uv run uvicorn sales_trainer.web.app:app` on a test port, waits for readiness and asserts `200`, `text/html` and the echoed token. Marked `e2e`.
+- **Commands:** `uv run pytest`, `uv run pytest -m e2e`, `uv run ruff check .`.
 
 ## Risks And Mitigations
 
-1. **Manejo del loop asyncio al arrancar uvicorn en un thread:** la integración entre el loop del thread daemon y el servidor ASGI puede requerir configuración explícita. Mitigación: levantar el servidor con un event loop dedicado en el thread daemon; la alternativa de un proceso hijo queda registrada como opción de desescenario.
-2. **Sin WebSocket ni audio en Fase 0:** el placeholder no incorpora funcionalidad conversacional. Mitigación: queda explícitamente fuera del alcance; las fases siguientes lo incorporan.
+1. **asyncio loop management when starting uvicorn in a thread.** Mitigation: let `uvicorn.Server.run()` create and own its loop inside the thread; the MCP side never touches that loop and only polls the `started` flag.
+2. **Accidental writes to stdout breaking the MCP protocol.** Mitigation: uvicorn's logs go to stderr through its logging config, and the code never uses `print`.
+3. **Port already in use.** Mitigation: `SALES_TRAINER_PORT` lets the user move the port; the error surfaces through uvicorn's log in the MCP client.
 
 ## Decision Summary
 
-- Arranque del servidor web: **Opción A** — uvicorn en thread daemon dentro del proceso MCP.
-- Bind: `127.0.0.1`; puerto por defecto `8765`, configurable por variable de entorno.
-- Placeholder: respuesta HTML mínima en `GET /`; sustituida por la UI real en fases posteriores.
-- Transporte MCP: stdio; logs a stderr.
-- Sesión: token UUID en la URL.
-- Browser: `webbrowser.open(url)`.
+- uvicorn in a daemon thread inside the MCP process (not a child process).
+- Bind `127.0.0.1`; port `8765` by default, `SALES_TRAINER_PORT` to override.
+- Session token: a UUID per `sales_trainer_start` call, carried in the query string.
+- Browser opened with `webbrowser.open`.
+- Placeholder HTML on `GET /` until the UI phase.
+- MCP transport stdio; stdout reserved for the protocol.
 
 ## Open Questions
 
-- Ninguna — diseño cerrado con la aprobación del usuario («todo ok»).
+None. The design was closed with user approval.

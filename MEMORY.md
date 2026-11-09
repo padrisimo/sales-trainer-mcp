@@ -1,45 +1,45 @@
-# Sales Trainer MCP — Prompt y memoria para opencode / Claude Code
+# Sales Trainer MCP — prompt and memory for opencode / Claude Code
 
-*Entrenador de ventas con avatar 3D, voz en tiempo real y evaluación del discurso · Python · 2 de noviembre de 2026*
+*Sales trainer with a 3D avatar, real-time voice and speech evaluation · Python · 2 November 2026*
 
-Cómo usarlo: la **Parte 1** es el prompt que pegas en opencode o Claude Code para que construya el proyecto por fases. La **Parte 2** es la memoria del proyecto (`AGENTS.md` para opencode, `CLAUDE.md` para Claude Code) que se guarda en la raíz del repositorio para que el agente conserve las reglas entre sesiones.
+How to use it: **Part 1** is the prompt you paste into opencode or Claude Code so it builds the project in phases. **Part 2** is the project memory (`AGENTS.md` for opencode, `CLAUDE.md` for Claude Code) that is stored in the repository root so the agent keeps the rules across sessions.
 
-## Parte 1 — Prompt principal
+## Part 1 — Main prompt
 
-### 1. Rol y objetivo
+### 1. Role and objective
 
-Actúa como ingeniero senior full-stack (Python + WebGL + audio en tiempo real). Construye desde cero un servidor MCP en Python llamado `sales-trainer-mcp`: un **entrenador de ventas por voz**. Cuando el usuario (desde opencode o Claude Code) invoca la herramienta de inicio, se abre una ventana del navegador con un **avatar 3D** que hace de potencial cliente. El usuario le habla por el micrófono, el avatar responde con voz sintetizada moviendo los labios con **visemas reales**, y el usuario debe **convencerle de que su producto le ahorrará tiempo y dinero**.
+Act as a senior full-stack engineer (Python + WebGL + real-time audio). Build from scratch a Python MCP server called `sales-trainer-mcp`: a **voice sales trainer**. When the user (from opencode or Claude Code) invokes the start tool, a browser window opens with a **3D avatar** acting as a potential customer. The user talks to it through the microphone, the avatar answers with synthesized voice moving its lips with **real visemes**, and the user must **convince it that the product will save it time and money**.
 
-Se evalúan el contenido persuasivo, la **dicción**, la **entonación** y la **elocuencia**. Una UI muestra un **termómetro de temperatura del éxito** que sube o baja durante la conversación. Al terminar hay resultado, opciones para **reintentar** y un **informe descargable en texto** que explica qué fue bien y qué no.
+Persuasive content, **diction**, **intonation** and **eloquence** are evaluated. A UI shows a **success temperature gauge** that rises or falls during the conversation. At the end there is a result, options to **retry**, and a **downloadable text report** explaining what went well and what did not.
 
-### 2. Arquitectura y stack
+### 2. Architecture and stack
 
-Organiza el sistema así:
+Organize the system like this:
 
 ```
 opencode / Claude Code --stdio--> sales_trainer MCP server (FastMCP)
-                                   | arranca en un hilo o proceso hijo
+                                   | starts in a thread or child process
                                    v
-                        FastAPI + uvicorn (127.0.0.1:PUERTO)
-                                   | HTTP estático + WebSocket
+                        FastAPI + uvicorn (127.0.0.1:PORT)
+                                   | static HTTP + WebSocket
                                    v
-                 Navegador: Three.js + AudioWorklet + UI
+                 Browser: Three.js + AudioWorklet + UI
 ```
 
-Regla crítica: con transporte stdio, **stdout está reservado al protocolo MCP**. Todos los logs van a stderr o a fichero.
+Critical rule: with the stdio transport, **stdout is reserved for the MCP protocol**. All logs go to stderr or a file.
 
-Stack propuesto (verifica versiones actuales en la documentación oficial y fíjalas en `pyproject.toml`; si hay una alternativa claramente mejor, justifícala en `docs/decisions.md`):
+Proposed stack (check current versions in the official documentation and pin them in `pyproject.toml`; if there is a clearly better alternative, justify it in `docs/decisions.md`):
 
-- **MCP**: SDK oficial `mcp` (FastMCP), transporte stdio.
-- **Backend**: FastAPI, uvicorn, WebSockets, pydantic v2, SQLite para el historial.
-- **STT**: `faster-whisper` (modelo configurable, CPU int8 por defecto, GPU si existe) con timestamps y probabilidad por palabra. VAD con Silero.
-- **Prosodia**: `parselmouth` (Praat) o `librosa` (pyin) para F0, intensidad y pausas.
-- **TTS**: interfaz `TTSProvider` con dos implementaciones (ver sección 3).
-- **LLM**: interfaz `LLMProvider` con Anthropic y cliente compatible con OpenAI (cubre Ollama, LM Studio, DeepSeek y similares), configurable por variables de entorno. Salidas estructuradas en JSON validadas con pydantic.
-- **Frontend**: HTML + módulos JS sin framework pesado, Three.js (más `@pixiv/three-vrm` si se usan avatares VRM) y AudioWorklet. Dependencias JS fijadas y servidas en local: **sin CDN en tiempo de ejecución**, para que funcione offline.
-- **Herramientas**: `uv`, `ruff`, `pytest`, `pytest-asyncio`, Playwright.
+- **MCP**: official `mcp` SDK (FastMCP), stdio transport.
+- **Backend**: FastAPI, uvicorn, WebSockets, pydantic v2, SQLite for the history.
+- **STT**: `faster-whisper` (configurable model, CPU int8 by default, GPU if available) with per-word timestamps and probabilities. VAD with Silero.
+- **Prosody**: `parselmouth` (Praat) or `librosa` (pyin) for F0, intensity and pauses.
+- **TTS**: `TTSProvider` interface with two implementations (see section 3).
+- **LLM**: `LLMProvider` interface with Anthropic and an OpenAI-compatible client (covers Ollama, LM Studio, DeepSeek and similar), configurable through environment variables. Structured JSON output validated with pydantic.
+- **Frontend**: HTML + JS modules without a heavy framework, Three.js (plus `@pixiv/three-vrm` if VRM avatars are used) and AudioWorklet. JS dependencies pinned and served locally: **no CDN at runtime**, so it works offline.
+- **Tooling**: `uv`, `ruff`, `pytest`, `pytest-asyncio`, Playwright.
 
-Estructura de carpetas objetivo:
+Target folder structure:
 
 ```
 sales-trainer-mcp/
@@ -47,7 +47,7 @@ sales-trainer-mcp/
   config/scoring.yaml
   src/sales_trainer/
     mcp_server.py
-    web/ (app.py, ws.py, static/ con index.html, js/, assets/)
+    web/ (app.py, ws.py, static/ with index.html, js/, assets/)
     voice/ (stt.py, vad.py, prosody.py, visemes.py, tts/base.py, tts/azure.py, tts/local.py)
     llm/ (base.py, anthropic.py, openai_compat.py)
     characters/ (nivel1.yaml, nivel2.yaml, nivel3.yaml, prompts/)
@@ -58,141 +58,141 @@ sales-trainer-mcp/
   docs/ (PLAN.md, decisions.md)
 ```
 
-### 3. Voz: STT, TTS y visemas reales
+### 3. Voice: STT, TTS and real visemes
 
-**Captura de audio (navegador → servidor)**
+**Audio capture (browser → server)**
 
-- `getUserMedia` con `echoCancellation` y `noiseSuppression` activados.
-- AudioWorklet que convierte a PCM16 mono a 16 kHz y lo envía por WebSocket en tramas binarias de 20–30 ms.
-- VAD en el servidor para segmentar turnos: el turno termina tras unos 700 ms de silencio (configurable). Modo alternativo de pulsar para hablar. Entrada de texto de respaldo para depurar.
-- **Barge-in**: si el usuario habla mientras el avatar habla, se corta el audio del avatar y se registra una interrupción.
-- El audio crudo **no se guarda** salvo que `SAVE_AUDIO=true`.
+- `getUserMedia` with `echoCancellation` and `noiseSuppression` enabled.
+- An AudioWorklet converts to PCM16 mono at 16 kHz and sends it over the WebSocket in 20–30 ms binary frames.
+- Server-side VAD segments turns: the turn ends after about 700 ms of silence (configurable). Alternative push-to-talk mode. Text input as a fallback for debugging.
+- **Barge-in**: if the user speaks while the avatar is talking, the avatar audio is cut and the interruption is recorded.
+- Raw audio is **not stored** unless `SAVE_AUDIO=true`.
 
 **STT**
 
-- Transcribe con timestamps por palabra y probabilidad por palabra. Guarda por turno: texto, palabras con probabilidad, duración, métricas de prosodia.
+- Transcribe with per-word timestamps and per-word probability. Store per turn: text, words with probability, duration, prosody metrics.
 
-**TTS con visemas reales**
+**TTS with real visemes**
 
-- Cada réplica del avatar produce **audio + línea temporal de visemas**: `[{t_ms, viseme, weight}]`.
-- «Reales» significa derivados de los **fonemas realmente pronunciados con sus tiempos reales en el audio**. Está prohibido animar la boca con la amplitud del audio o con movimiento aleatorio.
-- Conjunto interno de visemas: los 15 de Oculus (`sil, PP, FF, TH, DD, kk, CH, SS, nn, RR, aa, E, I, O, U`). Implementa tablas de mapeo desde los IDs de viseme de Azure (0–21) y desde fonemas IPA/espeak del español.
-- Aplica coarticulación (interpolación y suavizado entre visemas) y cierre de boca en los silencios.
-- **Proveedor A, Azure Speech**: emite eventos de visema con offsets de audio de forma nativa. Es la opción de máxima calidad y requiere clave.
-- **Proveedor B, local y offline** (Piper o Kokoro u otro motor): obtén fonemas con duraciones si la librería los expone; si no, aplica *forced alignment* sobre el audio generado (por ejemplo `ctc-forced-aligner`, Montreal Forced Aligner o WhisperX) y convierte fonema → viseme. **Antes de decidir, investiga en la documentación actual qué expone cada librería y qué hay para español**, y documenta la decisión y sus límites en `docs/decisions.md`. Este es el punto técnico más delicado del proyecto: valídalo primero con un prototipo.
-- **Sincronización**: el cliente reproduce con Web Audio y usa `AudioContext.currentTime` como reloj maestro. Desfase máximo tolerado: 40 ms.
-- **Latencia objetivo**: menos de 2,5 s desde que el usuario termina de hablar hasta el primer audio del avatar. Para lograrlo: LLM en streaming y TTS por frases.
-- Idioma por defecto español de España (`es-ES`), configurable. Voces y reglas de fonemas por idioma.
+- Every avatar line produces **audio + a viseme timeline**: `[{t_ms, viseme, weight}]`.
+- "Real" means derived from the **phonemes actually spoken with their real timings in the audio**. Animating the mouth from audio amplitude or with random movement is forbidden.
+- Internal viseme set: the 15 Oculus ones (`sil, PP, FF, TH, DD, kk, CH, SS, nn, RR, aa, E, I, O, U`). Implement mapping tables from Azure viseme IDs (0–21) and from Spanish IPA/espeak phonemes.
+- Apply coarticulation (interpolation and smoothing between visemes) and mouth closure during silences.
+- **Provider A, Azure Speech**: emits viseme events with audio offsets natively. Highest quality option, requires a key.
+- **Provider B, local and offline** (Piper or Kokoro or another engine): get phonemes with durations if the library exposes them; if not, apply *forced alignment* over the generated audio (for example `ctc-forced-aligner`, Montreal Forced Aligner or WhisperX) and convert phoneme → viseme. **Before deciding, research in the current documentation what each library exposes and what exists for Spanish**, and document the decision and its limits in `docs/decisions.md`. This is the most delicate technical point of the project: validate it first with a prototype.
+- **Synchronization**: the client plays through Web Audio and uses `AudioContext.currentTime` as the master clock. Maximum tolerated offset: 40 ms.
+- **Target latency**: under 2.5 s from the moment the user stops speaking to the avatar's first audio. To achieve it: LLM in streaming and TTS per sentence.
+- Default language Spain Spanish (`es-ES`), configurable. Voices and phoneme rules per language.
 
-### 4. Avatar 3D
+### 4. 3D avatar
 
-- Three.js con modelos GLB o VRM. Deben tener morph targets de visemas Oculus, o expresiones VRM (`aa, ih, ou, ee, oh`) con una tabla de mapeo a nuestros visemas.
-- Animación idle: parpadeo, respiración, micromovimientos de cabeza y mirada.
-- Reacción al estado del termómetro: interés alto → sonríe, asiente, se inclina hacia delante; interés bajo → gesto serio, mirada desviada, brazos cruzados o mirada al reloj.
-- **Tres avatares distintos**, uno por personaje. No uses assets con licencia dudosa: modelos CC0 o propios, o avatares procedurales de baja poligonía con los mismos morph targets. Registra las licencias en `assets/LICENSES.md`.
-- Página de depuración `/debug/visemes` con un botón por viseme y una frase de prueba para verificar la sincronía labial.
+- Three.js with GLB or VRM models. They must have Oculus viseme morph targets, or VRM expressions (`aa, ih, ou, ee, oh`) with a mapping table to our visemes.
+- Idle animation: blinking, breathing, micro head movements and gaze.
+- Reaction to the gauge state: high interest → smiles, nods, leans forward; low interest → serious gesture, averted gaze, crossed arms or a glance at the watch.
+- **Three different avatars**, one per character. Do not use assets with dubious licensing: CC0 or own models, or procedural low-poly avatars with the same morph targets. Record the licenses in `assets/LICENSES.md`.
+- Debug page `/debug/visemes` with one button per viseme and a test sentence to verify lip sync.
 
-### 5. Personajes y niveles de dificultad
+### 5. Characters and difficulty levels
 
-Cada personaje es una ficha YAML en `characters/` (personalidad, contexto de empresa, objeciones típicas, *hot buttons* que lo calientan o enfrían, muletillas propias, voz TTS, avatar, parámetros numéricos) con su prompt de sistema en un fichero aparte y versionado. Los nombres son sugerencias y se pueden cambiar.
+Each character is a YAML card in `characters/` (personality, company context, typical objections, *hot buttons* that warm or cool it, its own filler words, TTS voice, avatar, numeric parameters) with its system prompt in a separate, versioned file. The names are suggestions and can be changed.
 
-- **Nivel 1 — Fácil: Marta Ruiz, directora de operaciones receptiva.** Temperatura inicial 50, umbral de éxito 75, máximo 10 turnos. Paciente y curiosa, hace preguntas razonables y da señales de compra. Perdona un discurso algo desordenado, pero premia los datos concretos.
-- **Nivel 2 — Medio: Javier Soto, gerente neutral y escéptico.** Inicio 30, umbral 80, máximo 10 turnos. Plantea objeciones típicas (precio, «ya tengo proveedor», «no tengo tiempo para cambiar de sistema»). Pide ejemplos y cifras. Se enfría con vaguedades.
-- **Nivel 3 — Difícil: Carmen Valdés, directora financiera sin interés.** Inicio 10, umbral 85, máximo 8 turnos. Dice que solo tiene dos minutos, interrumpe y responde seco. Se enfría con tópicos, muletillas, monotonía y discursos largos. Solo se calienta con propuestas cuantificadas (horas por semana, euros al mes, ROI, plazo de retorno), prueba social creíble y buenas preguntas de descubrimiento. Si la temperatura llega a 0, cuelga.
+- **Level 1 — Easy: Marta Ruiz, receptive operations director.** Initial temperature 50, success threshold 75, maximum 10 turns. Patient and curious, asks reasonable questions and gives buying signals. Forgives a somewhat disorganized pitch but rewards concrete data.
+- **Level 2 — Medium: Javier Soto, neutral and skeptical manager.** Start 30, threshold 80, maximum 10 turns. Raises typical objections (price, "I already have a vendor", "I don't have time to change systems"). Asks for examples and figures. Cools down with vagueness.
+- **Level 3 — Hard: Carmen Valdés, uninterested CFO.** Start 10, threshold 85, maximum 8 turns. Says she only has two minutes, interrupts and answers curtly. Cools down with clichés, filler words, monotony and long speeches. Only warms up with quantified proposals (hours per week, euros per month, ROI, payback period), credible social proof and good discovery questions. If the temperature reaches 0, she hangs up.
 
-Reglas para el LLM que interpreta al personaje:
+Rules for the LLM playing the character:
 
-- Nunca sale del rol y nunca revela la puntuación ni la temperatura.
-- Responde en lenguaje hablado: 1–3 frases cortas (menos de 45 palabras en el nivel 3).
-- No sabe nada del producto más allá de lo que el vendedor le ha dicho.
-- El producto lo define el usuario en un formulario previo (nombre, qué hace, precio, tres beneficios). Hay un producto demo por defecto.
+- Never breaks character and never reveals the score or the temperature.
+- Answers in spoken language: 1–3 short sentences (under 45 words at level 3).
+- Knows nothing about the product beyond what the seller has told it.
+- The product is defined by the user in a previous form (name, what it does, price, three benefits). There is a default demo product.
 
-### 6. Motor de evaluación y termómetro
+### 6. Evaluation engine and gauge
 
-Cada turno del usuario se evalúa en **dos capas independientes**.
+Every user turn is evaluated in **two independent layers**.
 
-**A) Contenido y persuasión (LLM como juez).** Llamada **separada** de la del personaje, para que el rol no contamine la evaluación. El juez recibe la transcripción, el brief del producto y una rúbrica, y devuelve JSON estricto con puntuaciones de 0 a 10 en:
+**A) Content and persuasion (LLM as judge).** A call **separate** from the character's, so the role does not contaminate the evaluation. The judge receives the transcript, the product brief and a rubric, and returns strict JSON with scores from 0 to 10 in:
 
-- propuesta de valor;
-- ahorro de tiempo cuantificado;
-- ahorro de dinero cuantificado;
-- manejo de objeciones;
-- preguntas y personalización;
-- estructura y claridad;
-- cierre o llamada a la acción;
-- recursos persuasivos (historia, prueba social, contraste antes/después, cifras).
+- value proposition;
+- quantified time savings;
+- quantified money savings;
+- objection handling;
+- questions and personalization;
+- structure and clarity;
+- closing or call to action;
+- persuasive devices (story, social proof, before/after contrast, figures).
 
-**B) Entrega (señales medidas, nunca inventadas por el LLM).**
+**B) Delivery (measured signals, never invented by the LLM).**
 
-- **Dicción**: media y porcentaje de palabras con baja probabilidad en Whisper; velocidad de articulación.
-- **Entonación**: variación de F0 (desviación típica en semitonos y rango), índice de monotonía, dinámica de intensidad, contorno en los finales de frase.
-- **Ritmo y fluidez**: palabras por minuto (ideal 130–160), pausas de más de 1,5 s, muletillas por minuto (lista por idioma), repeticiones y falsos comienzos.
-- **Elocuencia**: diversidad léxica y longitud media de frase, combinadas con los recursos persuasivos detectados por el juez.
+- **Diction**: mean and percentage of words with low probability in Whisper; articulation speed.
+- **Intonation**: F0 variation (standard deviation in semitones and range), monotony index, intensity dynamics, contour at sentence endings.
+- **Pace and fluency**: words per minute (ideal 130–160), pauses over 1.5 s, filler words per minute (per-language list), repetitions and false starts.
+- **Eloquence**: lexical diversity and average sentence length, combined with the persuasive devices detected by the judge.
 
-Pesos y umbrales en `config/scoring.yaml`, **por nivel** (el nivel 3 pondera más la cuantificación y la entrega).
+Weights and thresholds live in `config/scoring.yaml`, **per level** (level 3 weights quantification and delivery more heavily).
 
-**Temperatura (0–100).** Por turno:
+**Temperature (0–100).** Per turn:
 
-- `delta = (puntuación_turno − 50) / 50 × sensibilidad_personaje × delta_máximo`, con `delta_máximo` de ±15 por turno;
-- inercia con media móvil para evitar saltos bruscos;
-- bonificaciones por *hot buttons* acertados y penalizaciones por divagar, muletillas excesivas o interrumpir al cliente.
+- `delta = (turn_score − 50) / 50 × character_sensitivity × max_delta`, with `max_delta` of ±15 per turn;
+- inertia with a moving average to avoid sudden jumps;
+- bonuses for hitting *hot buttons* and penalties for rambling, excessive filler words or interrupting the customer.
 
-Cada cambio de temperatura se guarda con su causa en lenguaje natural (por ejemplo: «−8: afirmación genérica sin cifras»), para poder mostrarla en la UI y en el informe.
+Every temperature change is stored with its cause in natural language (for example: "−8: generic claim without figures"), so it can be shown in the UI and in the report.
 
-**Fin de la partida.** Victoria: alcanzar el umbral y mantenerlo dos turnos, o que el personaje acepte un siguiente paso concreto. Derrota: temperatura 0 (cuelga), turnos agotados o tiempo agotado.
+**End of the game.** Victory: reaching the threshold and holding it for two turns, or the character accepting a concrete next step. Defeat: temperature 0 (hangs up), turns exhausted or time exhausted.
 
-### 7. Flujo de la UI, reintentos e informes
+### 7. UI flow, retries and reports
 
-**Pantalla de inicio**
+**Start screen**
 
-- Tres tarjetas de nivel con personaje, dificultad y consejos.
-- Formulario del producto.
-- Test de micrófono con medidor de nivel y gestión de permisos.
+- Three level cards with character, difficulty and tips.
+- Product form.
+- Microphone test with a level meter and permission handling.
 
-**Pantalla de sesión**
+**Session screen**
 
-- Avatar centrado y subtítulos opcionales.
-- Botón de micrófono o pulsar para hablar.
-- **Termómetro vertical animado** con marca del umbral y zonas fría, templada y caliente.
-- Contador de turnos y de tiempo.
-- Indicadores discretos en vivo: ritmo, volumen y muletillas.
-- Botón para terminar.
+- Centered avatar and optional subtitles.
+- Microphone button or push-to-talk.
+- **Animated vertical gauge** with the threshold mark and cold, warm and hot zones.
+- Turn and time counters.
+- Discreet live indicators: pace, volume and filler words.
+- End button.
 
-**Pantalla de resultado**
+**Result screen**
 
-- Éxito o fracaso, gráfico de temperatura por turno y puntuación por dimensión.
-- Tres puntos fuertes y tres a mejorar.
-- Botones: **Reintentar mismo nivel**, **Cambiar de nivel o personaje**, **Descargar informe (.txt)** y **Ver historial**.
+- Success or failure, temperature chart per turn and score per dimension.
+- Three strengths and three areas to improve.
+- Buttons: **Retry same level**, **Change level or character**, **Download report (.txt)** and **View history**.
 
-**Informe `.txt`** (UTF-8, legible en cualquier editor, sin depender de Markdown). Se genera siempre, y cuando la partida se pierde pone el foco en **por qué no funcionó**. Contenido:
+**`.txt` report** (UTF-8, readable in any editor, not dependent on Markdown). It is always generated, and when the game is lost it focuses on **why it did not work**. Contents:
 
-- cabecera: fecha, nivel, personaje, producto, duración, resultado y temperatura final;
-- evolución de la temperatura por turno con barra ASCII;
-- puntuación por dimensión con su explicación;
-- transcripción completa con marcas de tiempo;
-- anotaciones por turno (qué ayudó y qué enfrió);
-- momentos críticos;
-- métricas de voz;
-- plan de mejora con tres acciones concretas y reformulaciones sugeridas de las frases más débiles.
+- header: date, level, character, product, duration, result and final temperature;
+- temperature evolution per turn with an ASCII bar;
+- score per dimension with its explanation;
+- full transcript with timestamps;
+- per-turn annotations (what helped and what cooled it down);
+- critical moments;
+- voice metrics;
+- improvement plan with three concrete actions and suggested rewrites of the weakest sentences.
 
-Endpoint: `GET /api/sessions/{id}/report.txt` con `Content-Disposition: attachment`.
+Endpoint: `GET /api/sessions/{id}/report.txt` with `Content-Disposition: attachment`.
 
-**Historial** en SQLite, con comparación entre intentos del mismo nivel (mejora por dimensión).
+**History** in SQLite, with comparison between attempts of the same level (improvement per dimension).
 
-### 8. Herramientas MCP
+### 8. MCP tools
 
-- `sales_trainer_start(level: 1|2|3, product_brief: str | None, language: str = "es")`: arranca el servidor web si no está activo, abre el navegador y devuelve la URL y el `session_id`.
-- `sales_trainer_status(session_id)`: estado, turno actual y temperatura.
-- `sales_trainer_get_report(session_id)`: devuelve el informe de texto y la ruta del fichero.
-- `sales_trainer_list_sessions(limit)`: historial resumido.
-- `sales_trainer_stop()`: cierra el servidor web.
+- `sales_trainer_start(level: 1|2|3, product_brief: str | None, language: str = "es")`: starts the web server if it is not active, opens the browser and returns the URL and the `session_id`.
+- `sales_trainer_status(session_id)`: state, current turn and temperature.
+- `sales_trainer_get_report(session_id)`: returns the text report and the file path.
+- `sales_trainer_list_sessions(limit)`: summarized history.
+- `sales_trainer_stop()`: closes the web server.
 
-Cada herramienta con descripción clara, esquema de entrada tipado y errores legibles.
+Each tool with a clear description, a typed input schema and readable errors.
 
-### 9. Configuración, instalación y seguridad
+### 9. Configuration, installation and security
 
-- `.env.example` documentado: proveedor y modelo de LLM, claves, proveedor TTS, modelo Whisper, puerto, idioma y `SAVE_AUDIO`.
-- Registro en **opencode** (`opencode.json`):
+- Documented `.env.example`: LLM provider and model, keys, TTS provider, Whisper model, port, language and `SAVE_AUDIO`.
+- Registration in **opencode** (`opencode.json`):
 
 ```json
 {
@@ -206,38 +206,38 @@ Cada herramienta con descripción clara, esquema de entrada tipado y errores leg
 }
 ```
 
-- Registro en **Claude Code**: `claude mcp add sales-trainer -- uv run sales-trainer-mcp`.
-- Servidor web solo en `127.0.0.1`, token de sesión aleatorio en la URL y validación de `Origin` en el WebSocket.
-- Todo el procesamiento es local por defecto; solo se usa la nube si el usuario configura claves de proveedores cloud.
+- Registration in **Claude Code**: `claude mcp add sales-trainer -- uv run sales-trainer-mcp`.
+- Web server only on `127.0.0.1`, random session token in the URL and `Origin` validation on the WebSocket.
+- All processing is local by default; the cloud is only used if the user configures cloud provider keys.
 
-### 10. Calidad y pruebas
+### 10. Quality and testing
 
-- **Unitarias**: tablas de visemas, motor de temperatura (con puntuaciones simuladas, deterministas), métricas de prosodia con audios sintéticos, generador de informes y validación de las fichas YAML.
-- **Integración**: WebSocket con audio de ejemplo → transcripción → respuesta con LLM simulado.
-- **E2E con Playwright** (Chromium con micrófono falso: `--use-fake-device-for-media-stream` y `--use-file-for-fake-audio-capture=<wav>`), con proveedores LLM y TTS simulados: flujo completo del nivel 1 hasta la descarga del informe.
-- **Proveedores mock** para ejecutar todo sin claves ni red.
-- `ruff` y *type hints* en todo el código. README con instalación en cinco pasos y sección de resolución de problemas (permisos de micrófono, puertos, modelos).
+- **Unit**: viseme tables, temperature engine (with simulated, deterministic scores), prosody metrics with synthetic audio, report builder and validation of the YAML cards.
+- **Integration**: WebSocket with sample audio → transcription → response with a mocked LLM.
+- **E2E with Playwright** (Chromium with a fake microphone: `--use-fake-device-for-media-stream` and `--use-file-for-fake-audio-capture=<wav>`), with mocked LLM and TTS providers: full level 1 flow down to the report download.
+- **Mock providers** to run everything without keys or network.
+- `ruff` and *type hints* across all the code. README with a five-step installation and a troubleshooting section (microphone permissions, ports, models).
 
-### 11. Cómo trabajar
+### 11. How to work
 
-1. Empieza escribiendo `docs/PLAN.md` con arquitectura, decisiones y riesgos (sobre todo los visemas locales). Solo te detienes a preguntar ante un bloqueo real; en el resto de dudas, elige la opción más simple que cumpla los criterios y regístrala en `docs/decisions.md`.
-2. Trabaja en fases verticales, con un commit por fase y los tests en verde antes de pasar a la siguiente:
-   - **Fase 0**: esqueleto del MCP, FastAPI y apertura del navegador. Criterio: `sales_trainer_start` abre una página y devuelve la URL.
-   - **Fase 1**: avatar 3D con idle y panel `/debug/visemes`. Criterio: cada viseme se ve correcto.
-   - **Fase 2**: TTS con línea temporal de visemas sincronizada. Criterio: una frase en español se pronuncia con labios coherentes, desfase ≤ 40 ms.
-   - **Fase 3**: micrófono, VAD y STT con timestamps y probabilidades. Criterio: transcripción correcta en español con turnos bien segmentados.
-   - **Fase 4**: personajes con LLM y bucle de conversación con barge-in.
-   - **Fase 5**: motor de evaluación (juez + entrega) y temperatura.
-   - **Fase 6**: UI completa (niveles, termómetro, resultado, reintento).
-   - **Fase 7**: informes `.txt`, historial y herramientas MCP restantes.
-   - **Fase 8**: pruebas E2E, README, pulido y rendimiento.
-3. No inventes APIs: lee la documentación actual de cada librería y fija versiones. Al terminar cada fase, actualiza la sección «Estado» de la memoria del proyecto.
+1. Start by writing `docs/PLAN.md` with architecture, decisions and risks (especially the local visemes). Only stop to ask on a real blocker; for every other doubt, choose the simplest option that meets the criteria and record it in `docs/decisions.md`.
+2. Work in vertical phases, one commit per phase and tests green before moving to the next:
+   - **Phase 0**: MCP skeleton, FastAPI and browser opening. Criterion: `sales_trainer_start` opens a page and returns the URL.
+   - **Phase 1**: 3D avatar with idle and `/debug/visemes` panel. Criterion: every viseme looks correct.
+   - **Phase 2**: TTS with a synchronized viseme timeline. Criterion: a Spanish sentence is spoken with coherent lips, offset ≤ 40 ms.
+   - **Phase 3**: microphone, VAD and STT with timestamps and probabilities. Criterion: correct Spanish transcription with well-segmented turns.
+   - **Phase 4**: characters with LLM and the conversation loop with barge-in.
+   - **Phase 5**: evaluation engine (judge + delivery) and temperature.
+   - **Phase 6**: full UI (levels, gauge, result, retry).
+   - **Phase 7**: `.txt` reports, history and the remaining MCP tools.
+   - **Phase 8**: E2E tests, README, polish and performance.
+3. Do not invent APIs: read the current documentation of each library and pin versions. At the end of every phase, update the "Status" section of the project memory.
 
-### 12. Criterios de aceptación
+### 12. Acceptance criteria
 
-- Desde opencode o Claude Code, una llamada a `sales_trainer_start` abre el navegador y permite una conversación hablada completa.
-- Los labios siguen los fonemas reales del audio (sin animación por amplitud) con desfase ≤ 40 ms.
-- Los tres niveles se comportan de forma claramente distinta y el nivel 3 es difícil de ganar sin cifras ni buena entrega.
-- El termómetro reacciona turno a turno y cada cambio tiene una causa explicada.
-- Tras ganar o perder, se puede reintentar y descargar el informe `.txt`.
-- Toda la suite de pruebas pasa sin claves ni red, y existe al menos un E2E del flujo completo.
+- From opencode or Claude Code, a call to `sales_trainer_start` opens the browser and allows a complete spoken conversation.
+- The lips follow the real phonemes of the audio (no amplitude animation) with an offset ≤ 40 ms.
+- The three levels behave in clearly different ways and level 3 is hard to win without figures and good delivery.
+- The gauge reacts turn by turn and every change has an explained cause.
+- After winning or losing, the user can retry and download the `.txt` report.
+- The whole test suite passes without keys or network, and at least one E2E of the full flow exists.
