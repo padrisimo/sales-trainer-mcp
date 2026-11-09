@@ -438,7 +438,7 @@ git commit -m "feat: add azure tts provider with native viseme offsets"
 - Create: `tests/unit/test_tts_route.py`
 - Modify: `src/sales_trainer/web/app.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/unit/test_tts_route.py`:
 
@@ -488,19 +488,19 @@ def test_tts_reports_unavailable_provider(monkeypatch: pytest.MonkeyPatch) -> No
     assert client.post("/api/tts", json={"text": "Hola."}).status_code == 503
 ```
 
-- [ ] **Step 2: Run it and see it fail**
+- [x] **Step 2: Run it and see it fail**
 
 Run: `uv run pytest tests/unit/test_tts_route.py -v`
 
 Expected: FAIL — exit code 1; the first test fails with `assert 404 == 200`.
 
-- [ ] **Step 3: Create `src/sales_trainer/web/routes/__init__.py`**
+- [x] **Step 3: Create `src/sales_trainer/web/routes/__init__.py`**
 
 ```python
 """HTTP routes for the web UI."""
 ```
 
-- [ ] **Step 4: Create `src/sales_trainer/web/routes/tts.py`**
+- [x] **Step 4: Create `src/sales_trainer/web/routes/tts.py`**
 
 ```python
 import base64
@@ -534,7 +534,7 @@ def synthesize(request: TTSRequest) -> dict[str, object]:
     }
 ```
 
-- [ ] **Step 5: Mount the router and the debug page in `src/sales_trainer/web/app.py`**
+- [x] **Step 5: Mount the router and the debug page in `src/sales_trainer/web/app.py`**
 
 Add the import and the include right after `app.mount(...)`:
 
@@ -552,7 +552,7 @@ async def debug_tts(session: str = "") -> HTMLResponse:
     return _page("debug/tts.html", session)
 ```
 
-- [ ] **Step 6: Create a placeholder page so the route test can pass**
+- [x] **Step 6: Create a placeholder page so the route test can pass**
 
 `src/sales_trainer/web/static/debug/tts.html` (completed in Task 6):
 
@@ -575,13 +575,13 @@ async def debug_tts(session: str = "") -> HTMLResponse:
 </html>
 ```
 
-- [ ] **Step 7: Run the route tests**
+- [x] **Step 7: Run the route tests**
 
 Run: `uv run pytest tests/unit/test_tts_route.py -v`
 
 Expected: exit code 0; `4 passed`.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/sales_trainer/web/routes src/sales_trainer/web/app.py src/sales_trainer/web/static/debug/tts.html tests/unit/test_tts_route.py
