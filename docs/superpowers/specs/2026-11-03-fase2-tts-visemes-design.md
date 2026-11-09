@@ -56,7 +56,7 @@ Turn text into audio plus a viseme timeline whose timings come from the TTS engi
 
 **HTTP surface.** `src/sales_trainer/web/routes/tts.py` exposes `POST /api/tts` with a pydantic body `{text: str}` limited to 400 characters, returning the base64 audio inline. Reason: no file storage, no orphan files, one round trip, and Phase 2 has no session store yet.
 
-**Playback and lip sync.** `src/sales_trainer/web/static/js/speak.js` exports `speak(text)` and `visemeAt(timeline, tMs)`. `speak` fetches the endpoint, decodes with `AudioContext.decodeAudioData`, schedules an `AudioBufferSourceNode`, and on each animation frame computes `t = (audioContext.currentTime - startedAt) * 1000` and applies the weights of `visemeAt`. `visemeAt` is a pure function (last event with `t_ms <= t`, linear blend into the next event over its own duration). Reason: a pure function is testable in node without a browser, and using `AudioContext.currentTime` is the memory's requirement.
+**Playback and lip sync.** `src/sales_trainer/web/static/js/speak.js` exports `speak(text)` and `visemeAt(timeline, tMs)`. `speak` fetches the endpoint, decodes with `AudioContext.decodeAudioData`, schedules an `AudioBufferSourceNode`, and on each animation frame computes `t = (audioContext.currentTime - startedAt) * 1000` and applies the weights of `visemeAt`. `visemeAt` is a pure function: the last event with `t_ms <= t`, `sil` before the first event and when the timeline is empty. Shape transitions are smoothed by the existing morph-target lerp in `scene.js`, so the player never blends weights itself. Reason: a pure function is testable in node without a browser, and using `AudioContext.currentTime` is the memory's requirement.
 
 **Debug page.** `/debug/tts` serves `static/debug/tts.html` plus `static/js/tts-debug.js`, which mounts the Phase 1 scene, adds a text input and a speak button, and exposes `window.ttsDebug`.
 
@@ -79,7 +79,7 @@ Turn text into audio plus a viseme timeline whose timings come from the TTS engi
 - `tests/unit/test_visemes.py` — mapping coverage, `smooth` invariants, and the Python/JS name-list cross-check.
 - `tests/unit/test_tts_mock.py` — structure, monotonic timeline and duration bound.
 - `tests/unit/test_tts_route.py` — endpoint contract with the mock provider injected.
-- `tests/js/viseme_timeline.mjs` — node test of `visemeAt` boundaries and blending.
+- `tests/js/viseme_timeline.mjs` — node test of `visemeAt` boundaries and hold-until-end.
 - `tests/unit/test_viseme_timeline_js.py` — runs the node test inside pytest.
 - `tests/e2e/test_tts_page.py` — Playwright: mock provider, speak, assert audio plays and the active viseme advances.
 
@@ -93,7 +93,7 @@ Turn text into audio plus a viseme timeline whose timings come from the TTS engi
 ## Testing Strategy
 
 - **Unit (Python):** every Azure ID in 0-21 maps to one of the 15 names; `smooth` keeps the timeline monotonic, clamps weights and does not invent events; the mock result decodes as a valid WAV whose duration bounds the timeline; the endpoint returns the documented schema for the mock provider and a 4xx for empty or oversized text.
-- **Unit (node, via pytest):** `visemeAt` returns `sil` before the first event, the exact event on its timestamp, and a blend in between; the last event holds until the end.
+- **Unit (node, via pytest):** `visemeAt` returns `sil` before the first event, the exact event from its timestamp on, and holds the last event until the end.
 - **Cross-language contract:** a Python test parses `VISEMES` out of `static/js/visemes.js` and asserts it equals the Python list, so the two can never drift.
 - **e2e (Playwright, mock provider):** open `/debug/tts`, type a sentence, click speak, wait for `window.ttsDebug.speaking`, sample `window.ttsDebug.activeViseme` over time and assert it changes and that playback ends. Runs with `SALES_TRAINER_TTS=mock`, so no key and no network.
 - **Manual, with an Azure key:** speak a Spanish sentence in `/debug/tts` and confirm lips match the audio by ear and eye; this is the only step that validates the real engine.
