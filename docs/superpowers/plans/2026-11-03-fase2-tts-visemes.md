@@ -332,7 +332,7 @@ git commit -m "feat: add mock tts provider with real silent wav"
 - Create: `src/sales_trainer/voice/tts/azure.py`
 - Create: `tests/unit/test_tts_azure.py`
 
-- [ ] **Step 1: Create `src/sales_trainer/voice/tts/azure.py`**
+- [x] **Step 1: Create `src/sales_trainer/voice/tts/azure.py`**
 
 ```python
 import os
@@ -386,7 +386,7 @@ class AzureTTSProvider:
         return TTSResult(audio=bytes(result.audio_data), visemes=smooth(events))
 ```
 
-- [ ] **Step 2: Write `tests/unit/test_tts_azure.py`**
+- [x] **Step 2: Write `tests/unit/test_tts_azure.py`**
 
 ```python
 from types import SimpleNamespace
@@ -415,13 +415,13 @@ def test_unknown_azure_viseme_becomes_silence() -> None:
     assert event.viseme == "sil"
 ```
 
-- [ ] **Step 3: Run the tests**
+- [x] **Step 3: Run the tests**
 
 Run: `uv run pytest tests/unit/test_tts_azure.py -v`
 
 Expected: exit code 0; `3 passed`.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/sales_trainer/voice/tts/azure.py tests/unit/test_tts_azure.py
