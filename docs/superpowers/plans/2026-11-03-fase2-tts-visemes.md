@@ -214,7 +214,7 @@ git commit -m "feat: add viseme table and azure mapping"
 - Create: `src/sales_trainer/voice/tts/__init__.py`
 - Create: `tests/unit/test_tts_mock.py`
 
-- [ ] **Step 1: Create `src/sales_trainer/voice/tts/mock.py`**
+- [x] **Step 1: Create `src/sales_trainer/voice/tts/mock.py`**
 
 ```python
 import io
@@ -254,7 +254,7 @@ class MockTTSProvider:
         return TTSResult(audio=silent_wav(), visemes=visemes)
 ```
 
-- [ ] **Step 2: Create `src/sales_trainer/voice/tts/__init__.py`**
+- [x] **Step 2: Create `src/sales_trainer/voice/tts/__init__.py`**
 
 ```python
 import os
@@ -277,7 +277,7 @@ def get_provider() -> TTSProvider:
     raise TTSUnavailable(f"unknown SALES_TRAINER_TTS value: {name}")
 ```
 
-- [ ] **Step 3: Write `tests/unit/test_tts_mock.py`**
+- [x] **Step 3: Write `tests/unit/test_tts_mock.py`**
 
 ```python
 import io
@@ -311,13 +311,13 @@ def test_mock_timeline_uses_known_visemes() -> None:
     assert all(event.weight == 1.0 for event in result.visemes)
 ```
 
-- [ ] **Step 4: Run the tests**
+- [x] **Step 4: Run the tests**
 
 Run: `uv run pytest tests/unit/test_tts_mock.py -v`
 
 Expected: exit code 0; `3 passed`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/sales_trainer/voice/tts tests/unit/test_tts_mock.py
