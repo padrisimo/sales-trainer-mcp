@@ -1013,7 +1013,7 @@ Expected: exit code 0; `All checks passed!`.
 - Modify: `AGENTS.md`
 - Modify: `docs/decisions.md`
 
-- [ ] **Step 1: Update the status in `AGENTS.md`**
+- [x] **Step 1: Update the status in `AGENTS.md`**
 
 Before:
 
@@ -1029,7 +1029,7 @@ After:
 - Update here when closing each phase.
 ```
 
-- [ ] **Step 2: Append the decision to `docs/decisions.md`**
+- [x] **Step 2: Append the decision to `docs/decisions.md`**
 
 ```markdown
 ## 2026-11-03 — Phase 2: Azure as the TTS provider
@@ -1042,7 +1042,7 @@ After:
 - **Known limit:** without an Azure key the automated suite only exercises the mock, so lip sync against the real engine stays a manual check.
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add AGENTS.md docs/decisions.md
