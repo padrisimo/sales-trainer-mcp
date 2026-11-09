@@ -4,11 +4,14 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
+from sales_trainer.web.routes import tts as tts_routes
+
 STATIC_DIR = Path(__file__).parent / "static"
 
 app = FastAPI(title="Sales Trainer")
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+app.include_router(tts_routes.router)
 
 
 def _page(relative: str, session: str) -> HTMLResponse:
@@ -24,3 +27,8 @@ async def root(session: str = "") -> HTMLResponse:
 @app.get("/debug/visemes")
 async def debug_visemes(session: str = "") -> HTMLResponse:
     return _page("debug/visemes.html", session)
+
+
+@app.get("/debug/tts")
+async def debug_tts(session: str = "") -> HTMLResponse:
+    return _page("debug/tts.html", session)
