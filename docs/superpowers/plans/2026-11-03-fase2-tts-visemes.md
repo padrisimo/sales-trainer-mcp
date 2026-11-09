@@ -736,7 +736,7 @@ git commit -m "feat: add audio playback and pure viseme lookup"
 - Create: `src/sales_trainer/web/static/js/tts-debug.js`
 - Modify: `src/sales_trainer/web/static/debug/tts.html`
 
-- [ ] **Step 1: Create `src/sales_trainer/web/static/js/tts-debug.js`**
+- [x] **Step 1: Create `src/sales_trainer/web/static/js/tts-debug.js`**
 
 ```javascript
 import { createScene } from "./scene.js";
@@ -785,7 +785,7 @@ requestAnimationFrame(() => {
 });
 ```
 
-- [ ] **Step 2: Write the final `src/sales_trainer/web/static/debug/tts.html`**
+- [x] **Step 2: Write the final `src/sales_trainer/web/static/debug/tts.html`**
 
 ```html
 <!doctype html>
@@ -850,7 +850,7 @@ requestAnimationFrame(() => {
 </html>
 ```
 
-- [ ] **Step 3: Verify the route and the static file**
+- [x] **Step 3: Verify the route and the static file**
 
 Run:
 
@@ -867,7 +867,7 @@ print('speak.js', c.get('/static/js/speak.js').status_code)
 
 Expected: exit code 0; `debug tts 200`, `tts-debug.js 200`, `speak.js 200`.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/sales_trainer/web/static/js/tts-debug.js src/sales_trainer/web/static/debug/tts.html
