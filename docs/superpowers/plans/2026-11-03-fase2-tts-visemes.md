@@ -597,7 +597,7 @@ git commit -m "feat: add tts http endpoint"
 - Create: `tests/js/viseme_timeline.mjs`
 - Create: `tests/unit/test_viseme_timeline_js.py`
 
-- [ ] **Step 1: Create `src/sales_trainer/web/static/js/speak.js`**
+- [x] **Step 1: Create `src/sales_trainer/web/static/js/speak.js`**
 
 ```javascript
 // Pure timeline lookup: the last event at or before tMs, "sil" before the first
@@ -666,7 +666,7 @@ export async function speak(text, { onViseme = () => {}, onEnd = () => {} } = {}
 }
 ```
 
-- [ ] **Step 2: Write `tests/js/viseme_timeline.mjs`**
+- [x] **Step 2: Write `tests/js/viseme_timeline.mjs`**
 
 ```javascript
 import { visemeAt } from "../../src/sales_trainer/web/static/js/speak.js";
@@ -694,7 +694,7 @@ expect(visemeAt(timeline, 99999), "PP", "holds until the end");
 console.log("viseme timeline ok");
 ```
 
-- [ ] **Step 3: Write `tests/unit/test_viseme_timeline_js.py`**
+- [x] **Step 3: Write `tests/unit/test_viseme_timeline_js.py`**
 
 ```python
 import subprocess
@@ -715,13 +715,13 @@ def test_viseme_timeline_script_passes() -> None:
     assert "viseme timeline ok" in result.stdout
 ```
 
-- [ ] **Step 4: Run it**
+- [x] **Step 4: Run it**
 
 Run: `uv run pytest tests/unit/test_viseme_timeline_js.py -v`
 
 Expected: exit code 0; `1 passed`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/sales_trainer/web/static/js/speak.js tests/js/viseme_timeline.mjs tests/unit/test_viseme_timeline_js.py
