@@ -24,7 +24,7 @@
 - Create: `src/sales_trainer/web/static/LICENSES.md`
 - Modify: `.gitignore`
 
-- [ ] **Step 1: Crear `package.json`**
+- [x] **Step 1: Crear `package.json`**
 
 Contenido completo de `package.json`:
 
@@ -40,7 +40,7 @@ Contenido completo de `package.json`:
 }
 ```
 
-- [ ] **Step 2: Instalar y comprobar la versión**
+- [x] **Step 2: Instalar y comprobar la versión**
 
 Run: `npm install --no-fund --no-audit`
 
@@ -48,7 +48,7 @@ Run: `node -p "require('./node_modules/three/package.json').version"`
 
 Expected: exit code 0; salida `0.187.0`.
 
-- [ ] **Step 3: Copiar los dos ficheros ESM al árbol de estáticos**
+- [x] **Step 3: Copiar los dos ficheros ESM al árbol de estáticos**
 
 ```bash
 mkdir -p src/sales_trainer/web/static/js/vendor
@@ -56,7 +56,7 @@ cp node_modules/three/build/three.module.js src/sales_trainer/web/static/js/vend
 cp node_modules/three/build/three.core.js src/sales_trainer/web/static/js/vendor/three.core.js
 ```
 
-- [ ] **Step 4: Verificar que el import interno se resuelve en local**
+- [x] **Step 4: Verificar que el import interno se resuelve en local**
 
 Run: `grep -c "from './three.core.js'" src/sales_trainer/web/static/js/vendor/three.module.js`
 
@@ -66,7 +66,7 @@ Run: `grep -c "REVISION = '187'" src/sales_trainer/web/static/js/vendor/three.co
 
 Expected: exit code 0; salida `1`.
 
-- [ ] **Step 5: Añadir `node_modules/` a `.gitignore`**
+- [x] **Step 5: Añadir `node_modules/` a `.gitignore`**
 
 Editar `.gitignore`: añadir al final la línea
 
@@ -74,7 +74,7 @@ Editar `.gitignore`: añadir al final la línea
 node_modules/
 ```
 
-- [ ] **Step 6: Documentar la licencia y el origen**
+- [x] **Step 6: Documentar la licencia y el origen**
 
 Contenido completo de `src/sales_trainer/web/static/LICENSES.md`:
 
@@ -90,7 +90,7 @@ Contenido completo de `src/sales_trainer/web/static/LICENSES.md`:
 No hay modelos 3D externos: el avatar es procedural.
 ```
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add package.json package-lock.json .gitignore src/sales_trainer/web/static
@@ -104,7 +104,7 @@ git commit -m "chore: vendor three.js 0.187.0 for offline UI"
 **Files:**
 - Create: `tests/unit/test_debug_visemes_route.py`
 
-- [ ] **Step 1: Escribir el test que falla**
+- [x] **Step 1: Escribir el test que falla**
 
 Contenido completo de `tests/unit/test_debug_visemes_route.py`:
 
@@ -129,13 +129,13 @@ def test_debug_visemes_includes_canvas_and_panel() -> None:
     assert 'id="panel"' in response.text
 ```
 
-- [ ] **Step 2: Ejecutar y ver el rojo**
+- [x] **Step 2: Ejecutar y ver el rojo**
 
 Run: `uv run pytest tests/unit/test_debug_visemes_route.py -v`
 
 Expected: FAIL — exit code 1; `assert 404 == 200` en `test_debug_visemes_returns_html`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add tests/unit/test_debug_visemes_route.py
@@ -149,7 +149,7 @@ git commit -m "test: add failing test for debug visemes route"
 **Files:**
 - Modify: `src/sales_trainer/web/app.py`
 
-- [ ] **Step 1: Sustituir el contenido de `src/sales_trainer/web/app.py`**
+- [x] **Step 1: Sustituir el contenido de `src/sales_trainer/web/app.py`**
 
 Contenido completo de `src/sales_trainer/web/app.py`:
 
@@ -182,7 +182,7 @@ async def debug_visemes(session: str = "") -> HTMLResponse:
     return _page("debug/visemes.html", session)
 ```
 
-- [ ] **Step 2: Crear los HTML mínimos para poder arrancar la app**
+- [x] **Step 2: Crear los HTML mínimos para poder arrancar la app**
 
 Contenido completo de `src/sales_trainer/web/static/index.html` (se completa en la Task 8, aquí solo desbloquea la ruta):
 
@@ -216,13 +216,13 @@ Contenido completo de `src/sales_trainer/web/static/debug/visemes.html`:
 </html>
 ```
 
-- [ ] **Step 3: Ejecutar el test nuevo y los de la Fase 0**
+- [x] **Step 3: Ejecutar el test nuevo y los de la Fase 0**
 
 Run: `uv run pytest tests/unit -v`
 
 Expected: exit code 0; `6 passed` (4 de MCP + 2 de web: el de `/` sigue pasando porque `index.html` conserva el título «Sales Trainer» y el token, y los 2 nuevos de `/debug/visemes`).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/sales_trainer/web/app.py src/sales_trainer/web/static/index.html src/sales_trainer/web/static/debug/visemes.html
@@ -236,7 +236,7 @@ git commit -m "feat: serve avatar pages and static files"
 **Files:**
 - Create: `src/sales_trainer/web/static/js/visemes.js`
 
-- [ ] **Step 1: Crear `visemes.js`**
+- [x] **Step 1: Crear `visemes.js`**
 
 Contenido completo de `src/sales_trainer/web/static/js/visemes.js`:
 
@@ -286,7 +286,7 @@ export function weightsFor(name) {
 }
 ```
 
-- [ ] **Step 2: Verificar la lista desde node**
+- [x] **Step 2: Verificar la lista desde node**
 
 Run:
 
@@ -300,7 +300,7 @@ console.log(JSON.stringify(VISEMES) === JSON.stringify(expected) ? 'visemes ok' 
 
 Expected: exit code 0; salida `visemes ok`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/sales_trainer/web/static/js/visemes.js
@@ -316,7 +316,7 @@ git commit -m "feat: add oculus viseme list and mouth shapes"
 - Create: `tests/js/avatar_smoke.mjs`
 - Create: `tests/unit/test_avatar_js.py`
 
-- [ ] **Step 1: Crear `avatar.js`**
+- [x] **Step 1: Crear `avatar.js`**
 
 Contenido completo de `src/sales_trainer/web/static/js/avatar.js`:
 
@@ -431,7 +431,7 @@ export function createAvatar(options = {}) {
 }
 ```
 
-- [ ] **Step 2: Crear el smoke test de node**
+- [x] **Step 2: Crear el smoke test de node**
 
 Contenido completo de `tests/js/avatar_smoke.mjs`:
 
@@ -470,13 +470,13 @@ if (weights.length !== 15 || weights[VISEMES.indexOf("aa")] !== 1) {
 console.log("avatar smoke ok");
 ```
 
-- [ ] **Step 3: Ejecutar el smoke**
+- [x] **Step 3: Ejecutar el smoke**
 
 Run: `node tests/js/avatar_smoke.mjs`
 
 Expected: exit code 0; salida `avatar smoke ok`.
 
-- [ ] **Step 4: Envolverlo en un test de pytest**
+- [x] **Step 4: Envolverlo en un test de pytest**
 
 Contenido completo de `tests/unit/test_avatar_js.py`:
 
@@ -498,13 +498,13 @@ def test_avatar_smoke_script_passes() -> None:
     assert "avatar smoke ok" in result.stdout
 ```
 
-- [ ] **Step 5: Ejecutar el test**
+- [x] **Step 5: Ejecutar el test**
 
 Run: `uv run pytest tests/unit/test_avatar_js.py -v`
 
 Expected: exit code 0; `1 passed`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/sales_trainer/web/static/js/avatar.js tests/js/avatar_smoke.mjs tests/unit/test_avatar_js.py
@@ -518,7 +518,7 @@ git commit -m "feat: add procedural avatar with 15 viseme morph targets"
 **Files:**
 - Create: `src/sales_trainer/web/static/js/scene.js`
 
-- [ ] **Step 1: Crear `scene.js`**
+- [x] **Step 1: Crear `scene.js`**
 
 Contenido completo de `src/sales_trainer/web/static/js/scene.js`:
 
@@ -597,13 +597,13 @@ export function createScene(canvas, options = {}) {
 }
 ```
 
-- [ ] **Step 2: Verificar que el módulo es sintácticamente válido**
+- [x] **Step 2: Verificar que el módulo es sintácticamente válido**
 
 Run: `node --input-type=module -e "import('./src/sales_trainer/web/static/js/scene.js').then(() => console.log('import ok')).catch((error) => { console.error(error.message); process.exit(1); })"`
 
 Expected: exit code 0; salida `import ok`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/sales_trainer/web/static/js/scene.js
@@ -619,7 +619,7 @@ git commit -m "feat: add three.js scene with idle animation"
 - Modify: `src/sales_trainer/web/static/index.html`
 - Modify: `src/sales_trainer/web/static/debug/visemes.html`
 
-- [ ] **Step 1: Crear `debug.js`**
+- [x] **Step 1: Crear `debug.js`**
 
 Contenido completo de `src/sales_trainer/web/static/js/debug.js`:
 
@@ -668,7 +668,7 @@ requestAnimationFrame(() => {
 });
 ```
 
-- [ ] **Step 2: Escribir `index.html` definitivo**
+- [x] **Step 2: Escribir `index.html` definitivo**
 
 Contenido completo de `src/sales_trainer/web/static/index.html`:
 
@@ -713,7 +713,7 @@ Contenido completo de `src/sales_trainer/web/static/index.html`:
 </html>
 ```
 
-- [ ] **Step 3: Escribir `debug/visemes.html` definitivo**
+- [x] **Step 3: Escribir `debug/visemes.html` definitivo**
 
 Contenido completo de `src/sales_trainer/web/static/debug/visemes.html`:
 
@@ -781,7 +781,7 @@ Contenido completo de `src/sales_trainer/web/static/debug/visemes.html`:
 </html>
 ```
 
-- [ ] **Step 4: Verificar las rutas y los estáticos desde Python**
+- [x] **Step 4: Verificar las rutas y los estáticos desde Python**
 
 Run:
 
@@ -800,7 +800,7 @@ print('debug.js', c.get('/static/js/debug.js').status_code)
 
 Expected: exit code 0; `root 200`, `debug 200`, `three 200`, `core 200`, `debug.js 200`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/sales_trainer/web/static/js/debug.js src/sales_trainer/web/static/index.html src/sales_trainer/web/static/debug/visemes.html
@@ -815,7 +815,7 @@ git commit -m "feat: add avatar page and visemes debug panel"
 - Modify: `pyproject.toml`
 - Create: `tests/e2e/test_debug_visemes_page.py`
 
-- [ ] **Step 1: Añadir Playwright a las dependencias de desarrollo**
+- [x] **Step 1: Añadir Playwright a las dependencias de desarrollo**
 
 En `pyproject.toml`, dentro de `[dependency-groups] dev`, añadir la línea:
 
@@ -835,7 +835,7 @@ dev = [
 ]
 ```
 
-- [ ] **Step 2: Instalar dependencias y el navegador**
+- [x] **Step 2: Instalar dependencias y el navegador**
 
 Run: `uv sync`
 
@@ -845,7 +845,7 @@ Run: `uv run playwright install chromium`
 
 Expected: exit code 0; descarga (o confirma ya instalado) Chromium. Es una descarga grande y solo ocurre una vez.
 
-- [ ] **Step 3: Crear el test e2e**
+- [x] **Step 3: Crear el test e2e**
 
 Contenido completo de `tests/e2e/test_debug_visemes_page.py`:
 
@@ -948,13 +948,13 @@ def test_debug_page_applies_each_viseme() -> None:
         proc.wait(timeout=10)
 ```
 
-- [ ] **Step 4: Ejecutar el e2e**
+- [x] **Step 4: Ejecutar el e2e**
 
 Run: `uv run pytest -m e2e -v`
 
 Expected: exit code 0; `2 passed` (el smoke de la Fase 0 y el nuevo).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add pyproject.toml uv.lock tests/e2e/test_debug_visemes_page.py
@@ -965,19 +965,19 @@ git commit -m "test: add e2e coverage for the visemes debug page"
 
 ## Task 9: Suite completa y linter
 
-- [ ] **Step 1: Ejecutar toda la suite**
+- [x] **Step 1: Ejecutar toda la suite**
 
 Run: `uv run pytest -v`
 
 Expected: exit code 0; `10 passed`.
 
-- [ ] **Step 2: Linter**
+- [x] **Step 2: Linter**
 
 Run: `uv run ruff check .`
 
 Expected: exit code 0; `All checks passed!`.
 
-- [ ] **Step 3: Comprobación manual del criterio de fase**
+- [x] **Step 3: Comprobación manual del criterio de fase**
 
 Run: `uv run uvicorn sales_trainer.web.app:app --host 127.0.0.1 --port 8765`
 
@@ -993,7 +993,7 @@ Expected: la boca cambia de forma con cada viseme, el idle (parpadeo, respiraci�
 - Modify: `AGENTS.md`
 - Modify: `docs/decisions.md`
 
-- [ ] **Step 1: Actualizar el estado en `AGENTS.md`**
+- [x] **Step 1: Actualizar el estado en `AGENTS.md`**
 
 Antes:
 
@@ -1009,7 +1009,7 @@ Después:
 - Actualizar aquí al cerrar cada fase.
 ```
 
-- [ ] **Step 2: Añadir la decisión a `docs/decisions.md`**
+- [x] **Step 2: Añadir la decisión a `docs/decisions.md`**
 
 Añadir al final del fichero:
 
@@ -1024,7 +1024,7 @@ Añadir al final del fichero:
 - **Límite conocido:** si Chromium headless no levanta WebGL, el e2e cubre DOM y estado JS, y la comprobación visual queda como paso manual.
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add AGENTS.md docs/decisions.md
