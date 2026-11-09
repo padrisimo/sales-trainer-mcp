@@ -33,9 +33,13 @@ function mouthShapeArray(base, shape) {
   const scaleX = (0.45 + shape.wide * 0.75) * (1 - shape.round * 0.35);
   const scaleY = 0.12 + shape.open * 1.5;
   for (let i = 0; i < base.length; i += 3) {
-    out[i] = base[i] * scaleX;
-    out[i + 1] = base[i + 1] * scaleY;
-    out[i + 2] = base[i + 2] + shape.round * 0.08;
+    const x = base[i] * scaleX;
+    const y = base[i + 1] * scaleY;
+    // La z se recalcula con la curvatura del cráneo en la posición ya deformada,
+    // si se arrastrara la z base los visemes abiertos se hundirían en la cabeza.
+    out[i] = x;
+    out[i + 1] = y;
+    out[i + 2] = skullSurfaceZ(x, y) - MOUTH_CENTER.z + 0.01 + shape.round * 0.08;
   }
   return out;
 }
