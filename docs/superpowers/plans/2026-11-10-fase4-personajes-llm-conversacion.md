@@ -87,7 +87,7 @@ git commit -m "build: add pyyaml for the character cards"
 
 The numbers are fixed by `MEMORY.md` §5: Marta 50/75/10, Javier 30/80/10, Carmen 10/85/8. Card field names and comments stay in English; the prompt text is Spanish because it is what the character says.
 
-- [ ] **Step 1: Create `characters/nivel1.yaml`**
+- [x] **Step 1: Create `characters/nivel1.yaml`**
 
 ```yaml
 # Level 1 — Easy: receptive operations director. Numbers from MEMORY.md §5.
@@ -112,7 +112,7 @@ filler_words:
   - "Claro, claro"
 ```
 
-- [ ] **Step 2: Create `characters/nivel2.yaml`**
+- [x] **Step 2: Create `characters/nivel2.yaml`**
 
 ```yaml
 # Level 2 — Medium: neutral and skeptical manager. Numbers from MEMORY.md §5.
@@ -138,7 +138,7 @@ filler_words:
   - "Hombre, depende"
 ```
 
-- [ ] **Step 3: Create `characters/nivel3.yaml`**
+- [x] **Step 3: Create `characters/nivel3.yaml`**
 
 ```yaml
 # Level 3 — Hard: uninterested CFO with two minutes. Numbers from MEMORY.md §5.
@@ -164,7 +164,7 @@ filler_words:
   - "Vamos al grano"
 ```
 
-- [ ] **Step 4: Create `characters/prompts/nivel1.md`**
+- [x] **Step 4: Create `characters/prompts/nivel1.md`**
 
 ```markdown
 # Nivel 1 — Marta Ruiz
