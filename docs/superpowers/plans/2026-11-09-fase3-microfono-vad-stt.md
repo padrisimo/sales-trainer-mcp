@@ -33,7 +33,7 @@
 - Modify: `pyproject.toml`
 - Modify: `uv.lock`
 
-- [ ] **Step 1: Add the three dependencies**
+- [x] **Step 1: Add the three dependencies**
 
 Run:
 
@@ -43,7 +43,7 @@ uv add faster-whisper onnxruntime numpy
 
 Expected: exit code 0; `uv` prints `Resolved N packages` and `Installed N packages`, and `pyproject.toml` gains three `>=` entries under `dependencies`.
 
-- [ ] **Step 2: Verify the versions and that torch stayed out**
+- [x] **Step 2: Verify the versions and that torch stayed out**
 
 Run:
 
@@ -59,13 +59,13 @@ uv pip list | grep -iE '^(torch|silero-vad)' || echo "no torch, no silero-vad"
 
 Expected: exit code 0; `faster-whisper 1.2.1`, `numpy 2.x.y`, `onnxruntime 1.x.y`, then `no torch, no silero-vad`.
 
-- [ ] **Step 3: Confirm the existing suite still passes**
+- [x] **Step 3: Confirm the existing suite still passes**
 
 Run: `uv run pytest -q`
 
 Expected: exit code 0; `30 passed`.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add pyproject.toml uv.lock
@@ -80,7 +80,7 @@ git commit -m "build: add faster-whisper, onnxruntime and numpy"
 - Create: `src/sales_trainer/voice/models/silero_vad.onnx`
 - Modify: `src/sales_trainer/web/static/LICENSES.md`
 
-- [ ] **Step 1: Create the directory and extract the model from the wheel**
+- [x] **Step 1: Create the directory and extract the model from the wheel**
 
 Run:
 
@@ -95,7 +95,7 @@ shasum -a 256 src/sales_trainer/voice/models/silero_vad.onnx
 
 Expected: `2327524` bytes and SHA-256 `2623a2953f6ff3d2c1e61740c6cdb7168133479b267dfef114a4a3cc5bdd788f`.
 
-- [ ] **Step 2: Verify the graph signature with the real runtime**
+- [x] **Step 2: Verify the graph signature with the real runtime**
 
 Run:
 
@@ -110,7 +110,7 @@ print([(o.name, o.shape) for o in session.get_outputs()])
 
 Expected: exit code 0; the inputs are `input` `[1, 512]` `tensor(float)`, `state` `[2, 1, 128]` `tensor(float)` and `sr` with an empty shape `tensor(int64)`; the outputs are `output` `[1, 1]` and `stateN` `[2, 1, 128]` (ONNX prints the scalar shape as `[]`).
 
-- [ ] **Step 3: Document the license**
+- [x] **Step 3: Document the license**
 
 Append to `src/sales_trainer/web/static/LICENSES.md`:
 
@@ -123,7 +123,7 @@ Append to `src/sales_trainer/web/static/LICENSES.md`:
 - Reason for versioning it: the `silero-vad` package would pull `torch` (~2.5 GB) for a 2.2 MB model; `onnxruntime` is already installed by `faster-whisper`.
 ```
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/sales_trainer/voice/models/silero_vad.onnx src/sales_trainer/web/static/LICENSES.md
@@ -137,7 +137,7 @@ git commit -m "feat: vendor silero vad v5 onnx model"
 **Files:**
 - Create: `tests/fixtures/hola-marta-16k.wav`
 
-- [ ] **Step 1: Synthesize it once with Azure, padded so a turn can close**
+- [x] **Step 1: Synthesize it once with Azure, padded so a turn can close**
 
 The fixture is padded with 500 ms of digital silence in front and 1 s at the end, so the VAD test has clean edges and the fake microphone always produces a closeable turn. This command is a one-off; nothing is added to the repo.
 
@@ -174,7 +174,7 @@ print('wrote', path, path.stat().st_size)
 
 Expected: exit code 0; `wrote tests/fixtures/hola-marta-16k.wav <size>` with a size between 90 000 and 250 000 bytes.
 
-- [ ] **Step 2: Verify the format a reader depends on**
+- [x] **Step 2: Verify the format a reader depends on**
 
 Run:
 
@@ -189,7 +189,7 @@ with wave.open('tests/fixtures/hola-marta-16k.wav', 'rb') as wav:
 
 Expected: `16000 1 2 <frames>` and a duration between 2.5 and 6.0 seconds.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add tests/fixtures/hola-marta-16k.wav
@@ -204,7 +204,7 @@ git commit -m "test: add 16 khz spanish speech fixture"
 - Create: `src/sales_trainer/voice/vad.py`
 - Test: `tests/unit/test_vad.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/unit/test_vad.py`:
 
@@ -258,13 +258,13 @@ def test_speech_scores_above_the_threshold_on_the_fixture() -> None:
     assert max(scores[-10:]) < 0.5
 ```
 
-- [ ] **Step 2: Run it and see it fail**
+- [x] **Step 2: Run it and see it fail**
 
 Run: `uv run pytest tests/unit/test_vad.py -v`
 
 Expected: FAIL — exit code 1, `ModuleNotFoundError: No module named 'sales_trainer.voice.vad'`.
 
-- [ ] **Step 3: Create `src/sales_trainer/voice/vad.py`**
+- [x] **Step 3: Create `src/sales_trainer/voice/vad.py`**
 
 ```python
 from pathlib import Path
@@ -303,19 +303,19 @@ class SileroVAD:
         return float(output.reshape(-1)[0])
 ```
 
-- [ ] **Step 4: Run the tests**
+- [x] **Step 4: Run the tests**
 
 Run: `uv run pytest tests/unit/test_vad.py -v`
 
 Expected: exit code 0; `3 passed`.
 
-- [ ] **Step 5: Lint**
+- [x] **Step 5: Lint**
 
 Run: `uv run ruff check src/sales_trainer/voice/vad.py tests/unit/test_vad.py`
 
 Expected: exit code 0; `All checks passed!`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/sales_trainer/voice/vad.py tests/unit/test_vad.py
@@ -332,7 +332,7 @@ git commit -m "feat: add silero vad over onnxruntime"
 - Create: `src/sales_trainer/voice/turns.py`
 - Test: `tests/unit/test_turns.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/unit/test_turns.py`:
 
@@ -418,13 +418,13 @@ def test_store_returns_a_copy_and_keeps_order() -> None:
     assert len(store.list("s")) == 2
 ```
 
-- [ ] **Step 2: Run it and see it fail**
+- [x] **Step 2: Run it and see it fail**
 
 Run: `uv run pytest tests/unit/test_turns.py -v`
 
 Expected: FAIL — exit code 1, `ModuleNotFoundError: No module named 'sales_trainer.voice.turns'`.
 
-- [ ] **Step 3: Create the STT package with its base models**
+- [x] **Step 3: Create the STT package with its base models**
 
 `src/sales_trainer/voice/stt/__init__.py` (Task 9 turns it into the factory):
 
@@ -461,7 +461,7 @@ class STTProvider(Protocol):
     def transcribe(self, pcm16: bytes) -> STTResult: ...
 ```
 
-- [ ] **Step 4: Create `src/sales_trainer/voice/turns.py`**
+- [x] **Step 4: Create `src/sales_trainer/voice/turns.py`**
 
 ```python
 from dataclasses import dataclass, field
@@ -569,13 +569,13 @@ def get_turn_store() -> TurnStore:
     return _STORE
 ```
 
-- [ ] **Step 5: Run the tests**
+- [x] **Step 5: Run the tests**
 
 Run: `uv run pytest tests/unit/test_turns.py -v`
 
 Expected: exit code 0; `8 passed`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/sales_trainer/voice/stt src/sales_trainer/voice/turns.py tests/unit/test_turns.py
@@ -590,7 +590,7 @@ git commit -m "feat: add pure turn detector and in-memory turn store"
 - Create: `src/sales_trainer/voice/stt/mock.py`
 - Test: `tests/unit/test_stt_mock.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/unit/test_stt_mock.py`:
 
@@ -623,13 +623,13 @@ def test_mock_probabilities_are_bounded_and_fixed() -> None:
     assert all(0.0 <= value <= 1.0 for value in CONFIDENCES)
 ```
 
-- [ ] **Step 2: Run it and see it fail**
+- [x] **Step 2: Run it and see it fail**
 
 Run: `uv run pytest tests/unit/test_stt_mock.py -v`
 
 Expected: FAIL — exit code 1, `ModuleNotFoundError: No module named 'sales_trainer.voice.stt.mock'`.
 
-- [ ] **Step 3: Create `src/sales_trainer/voice/stt/mock.py`**
+- [x] **Step 3: Create `src/sales_trainer/voice/stt/mock.py`**
 
 ```python
 from sales_trainer.voice.stt.base import STTResult, Word
@@ -652,13 +652,13 @@ class MockSTTProvider:
         return STTResult(text=TEXT, language="es", words=words)
 ```
 
-- [ ] **Step 4: Run the tests**
+- [x] **Step 4: Run the tests**
 
 Run: `uv run pytest tests/unit/test_stt_mock.py -v`
 
 Expected: exit code 0; `3 passed`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/sales_trainer/voice/stt/mock.py tests/unit/test_stt_mock.py
@@ -673,7 +673,7 @@ git commit -m "feat: add mock stt provider"
 - Create: `src/sales_trainer/voice/stt/whisper.py`
 - Test: `tests/unit/test_stt_providers.py`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `tests/unit/test_stt_providers.py`:
 
@@ -740,13 +740,13 @@ def test_whisper_failure_raises_unavailable() -> None:
         provider.transcribe(b"\x00\x00" * 16000)
 ```
 
-- [ ] **Step 2: Run it and see it fail**
+- [x] **Step 2: Run it and see it fail**
 
 Run: `uv run pytest tests/unit/test_stt_providers.py -v`
 
 Expected: FAIL — exit code 1, `ModuleNotFoundError: No module named 'sales_trainer.voice.stt.whisper'`.
 
-- [ ] **Step 3: Create `src/sales_trainer/voice/stt/whisper.py`**
+- [x] **Step 3: Create `src/sales_trainer/voice/stt/whisper.py`**
 
 ```python
 import os
@@ -801,13 +801,13 @@ class WhisperSTTProvider:
         return STTResult(text=" ".join(text for text in texts if text), language=LANGUAGE, words=words)
 ```
 
-- [ ] **Step 4: Run the tests**
+- [x] **Step 4: Run the tests**
 
 Run: `uv run pytest tests/unit/test_stt_providers.py -v`
 
 Expected: exit code 0; `3 passed`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/sales_trainer/voice/stt/whisper.py tests/unit/test_stt_providers.py
@@ -822,7 +822,7 @@ git commit -m "feat: add faster-whisper stt provider"
 - Create: `src/sales_trainer/voice/stt/azure.py`
 - Test: `tests/unit/test_stt_providers.py`
 
-- [ ] **Step 1: Add the imports and the failing tests**
+- [x] **Step 1: Add the imports and the failing tests**
 
 In `tests/unit/test_stt_providers.py`, replace the import block with:
 
@@ -868,13 +868,13 @@ def test_azure_word_probability_is_clamped() -> None:
     assert words_from_json(payload)[0].probability == 1.0
 ```
 
-- [ ] **Step 2: Run it and see it fail**
+- [x] **Step 2: Run it and see it fail**
 
 Run: `uv run pytest tests/unit/test_stt_providers.py -v`
 
 Expected: FAIL — exit code 1, `ModuleNotFoundError: No module named 'sales_trainer.voice.stt.azure'`.
 
-- [ ] **Step 3: Create `src/sales_trainer/voice/stt/azure.py`**
+- [x] **Step 3: Create `src/sales_trainer/voice/stt/azure.py`**
 
 ```python
 import json
@@ -946,13 +946,13 @@ class AzureSTTProvider:
         )
 ```
 
-- [ ] **Step 4: Run the tests**
+- [x] **Step 4: Run the tests**
 
 Run: `uv run pytest tests/unit/test_stt_providers.py -v`
 
 Expected: exit code 0; `6 passed`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/sales_trainer/voice/stt/azure.py tests/unit/test_stt_providers.py
@@ -967,7 +967,7 @@ git commit -m "feat: add azure stt provider with word level timestamps"
 - Modify: `src/sales_trainer/voice/stt/__init__.py`
 - Test: `tests/unit/test_stt_providers.py`
 
-- [ ] **Step 1: Add the imports and the failing tests**
+- [x] **Step 1: Add the imports and the failing tests**
 
 In `tests/unit/test_stt_providers.py`, replace the import block with:
 
@@ -1010,13 +1010,13 @@ def test_azure_without_credentials_raises(monkeypatch: pytest.MonkeyPatch) -> No
         get_stt_provider()
 ```
 
-- [ ] **Step 2: Run it and see it fail**
+- [x] **Step 2: Run it and see it fail**
 
 Run: `uv run pytest tests/unit/test_stt_providers.py -v`
 
 Expected: FAIL — exit code 1, `ImportError: cannot import name 'get_stt_provider'`.
 
-- [ ] **Step 3: Replace `src/sales_trainer/voice/stt/__init__.py`**
+- [x] **Step 3: Replace `src/sales_trainer/voice/stt/__init__.py`**
 
 ```python
 """Speech to text providers: faster-whisper (default), azure and mock."""
@@ -1058,13 +1058,13 @@ def get_stt_provider() -> STTProvider:
     raise STTUnavailable(f"unknown SALES_TRAINER_STT value: {name}")
 ```
 
-- [ ] **Step 4: Run the tests**
+- [x] **Step 4: Run the tests**
 
 Run: `uv run pytest tests/unit/test_stt_providers.py -v`
 
 Expected: exit code 0; `10 passed`.
 
-- [ ] **Step 5: Verify the default path never imports Azure or whisper for the mock**
+- [x] **Step 5: Verify the default path never imports Azure or whisper for the mock**
 
 Run:
 
@@ -1080,7 +1080,7 @@ print('azure imported:', 'sales_trainer.voice.stt.azure' in sys.modules)
 
 Expected: `MockSTTProvider`, `whisper imported: False`, `azure imported: False`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/sales_trainer/voice/stt/__init__.py tests/unit/test_stt_providers.py
@@ -1095,7 +1095,7 @@ git commit -m "feat: add stt provider factory"
 - Create: `src/sales_trainer/web/sessions.py`
 - Test: `tests/unit/test_sessions.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/unit/test_sessions.py`:
 
@@ -1119,13 +1119,13 @@ def test_an_empty_token_is_never_known() -> None:
     assert sessions.is_known("") is False
 ```
 
-- [ ] **Step 2: Run it and see it fail**
+- [x] **Step 2: Run it and see it fail**
 
 Run: `uv run pytest tests/unit/test_sessions.py -v`
 
 Expected: FAIL — exit code 1, `ModuleNotFoundError: No module named 'sales_trainer.web.sessions'`.
 
-- [ ] **Step 3: Create `src/sales_trainer/web/sessions.py`**
+- [x] **Step 3: Create `src/sales_trainer/web/sessions.py`**
 
 ```python
 """Session tokens this server has issued or served, for the WebSocket handshake."""
@@ -1143,13 +1143,13 @@ def is_known(token: str) -> bool:
     return bool(token) and token in _TOKENS
 ```
 
-- [ ] **Step 4: Run the tests**
+- [x] **Step 4: Run the tests**
 
 Run: `uv run pytest tests/unit/test_sessions.py -v`
 
 Expected: exit code 0; `3 passed`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/sales_trainer/web/sessions.py tests/unit/test_sessions.py
@@ -1166,7 +1166,7 @@ git commit -m "feat: add session token registry"
 - Test: `tests/unit/test_sessions.py`
 - Test: `tests/unit/test_mcp_server.py`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 In `tests/unit/test_sessions.py`, replace the import block with:
 
@@ -1213,13 +1213,13 @@ def test_start_registers_the_session_token(monkeypatch: pytest.MonkeyPatch) -> N
     assert sessions.is_known(result["session_id"]) is True
 ```
 
-- [ ] **Step 2: Run them and see them fail**
+- [x] **Step 2: Run them and see them fail**
 
 Run: `uv run pytest tests/unit/test_sessions.py tests/unit/test_mcp_server.py -v`
 
 Expected: FAIL — exit code 1; `test_loading_a_page_registers_the_session_token` fails with `assert False is True`, and `test_start_registers_the_session_token` fails the same way.
 
-- [ ] **Step 3: Register inside `_page` in `src/sales_trainer/web/app.py`**
+- [x] **Step 3: Register inside `_page` in `src/sales_trainer/web/app.py`**
 
 Add the import after the existing `tts` router import:
 
@@ -1244,7 +1244,7 @@ def _page(relative: str, session: str) -> HTMLResponse:
     return HTMLResponse(content=html.replace("__SESSION_TOKEN__", session), media_type="text/html")
 ```
 
-- [ ] **Step 4: Register the token in `src/sales_trainer/mcp_server.py`**
+- [x] **Step 4: Register the token in `src/sales_trainer/mcp_server.py`**
 
 Add the import next to `from sales_trainer.web.app import app`:
 
@@ -1269,19 +1269,19 @@ def start(level: int = 1, product_brief: str | None = None, language: str = "es"
     url = build_url(port=PORT, token=token)
 ```
 
-- [ ] **Step 5: Run the tests**
+- [x] **Step 5: Run the tests**
 
 Run: `uv run pytest tests/unit/test_sessions.py tests/unit/test_mcp_server.py -v`
 
 Expected: exit code 0; `4 passed` for `test_sessions.py` and `5 passed` for `test_mcp_server.py`.
 
-- [ ] **Step 6: Run the whole suite**
+- [x] **Step 6: Run the whole suite**
 
 Run: `uv run pytest -q`
 
 Expected: exit code 0; `59 passed` (30 at the start of the phase + 3 vad + 8 turns + 3 mock + 10 providers + 4 sessions + 1 new in `test_mcp_server.py`).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/sales_trainer/web/app.py src/sales_trainer/mcp_server.py tests/unit/test_sessions.py tests/unit/test_mcp_server.py
@@ -1297,7 +1297,7 @@ git commit -m "feat: register session tokens from mcp and page loads"
 - Modify: `src/sales_trainer/web/app.py`
 - Test: `tests/unit/test_turns_route.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/unit/test_turns_route.py`:
 
@@ -1340,13 +1340,13 @@ def test_turns_come_back_in_order_with_their_words() -> None:
     assert body["turns"][1]["words"] == []
 ```
 
-- [ ] **Step 2: Run it and see it fail**
+- [x] **Step 2: Run it and see it fail**
 
 Run: `uv run pytest tests/unit/test_turns_route.py -v`
 
 Expected: FAIL — exit code 1; the first test fails with `assert 404 == 200`.
 
-- [ ] **Step 3: Create `src/sales_trainer/web/routes/stt.py`**
+- [x] **Step 3: Create `src/sales_trainer/web/routes/stt.py`**
 
 ```python
 from fastapi import APIRouter
@@ -1371,7 +1371,7 @@ def list_turns(session: str = "") -> dict[str, list[dict[str, object]]]:
     }
 ```
 
-- [ ] **Step 4: Mount the router in `src/sales_trainer/web/app.py`**
+- [x] **Step 4: Mount the router in `src/sales_trainer/web/app.py`**
 
 Change the import block from:
 
@@ -1394,13 +1394,13 @@ And after `app.include_router(tts_routes.router)` add:
 app.include_router(stt_routes.router)
 ```
 
-- [ ] **Step 5: Run the tests**
+- [x] **Step 5: Run the tests**
 
 Run: `uv run pytest tests/unit/test_turns_route.py -v`
 
 Expected: exit code 0; `2 passed`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/sales_trainer/web/routes/stt.py src/sales_trainer/web/app.py tests/unit/test_turns_route.py
@@ -1416,7 +1416,7 @@ git commit -m "feat: add turns endpoint"
 - Modify: `src/sales_trainer/web/app.py`
 - Test: `tests/unit/test_stt_ws.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/unit/test_stt_ws.py`:
 
@@ -1465,13 +1465,13 @@ def test_an_unknown_token_is_rejected() -> None:
     assert payload["code"] == "session"
 ```
 
-- [ ] **Step 2: Run it and see it fail**
+- [x] **Step 2: Run it and see it fail**
 
 Run: `uv run pytest tests/unit/test_stt_ws.py -v`
 
 Expected: FAIL — exit code 1; `websocket_connect` raises because `/ws/stt` does not exist (403 handshake).
 
-- [ ] **Step 3: Create `src/sales_trainer/web/routes/stt_ws.py`**
+- [x] **Step 3: Create `src/sales_trainer/web/routes/stt_ws.py`**
 
 ```python
 import os
@@ -1508,7 +1508,7 @@ async def stt_socket(websocket: WebSocket, session: str = "") -> None:
     await websocket.send_json({"type": "ready"})
 ```
 
-- [ ] **Step 4: Mount the router in `src/sales_trainer/web/app.py`**
+- [x] **Step 4: Mount the router in `src/sales_trainer/web/app.py`**
 
 Add the import after the `stt` router import:
 
@@ -1522,13 +1522,13 @@ And after `app.include_router(stt_routes.router)` add:
 app.include_router(stt_ws_routes.router)
 ```
 
-- [ ] **Step 5: Run the tests**
+- [x] **Step 5: Run the tests**
 
 Run: `uv run pytest tests/unit/test_stt_ws.py -v`
 
 Expected: exit code 0; `3 passed`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/sales_trainer/web/routes/stt_ws.py src/sales_trainer/web/app.py tests/unit/test_stt_ws.py
@@ -1543,7 +1543,7 @@ git commit -m "feat: add stt websocket with origin and token checks"
 - Modify: `src/sales_trainer/web/routes/stt_ws.py`
 - Test: `tests/unit/test_stt_ws.py`
 
-- [ ] **Step 1: Append the failing tests**
+- [x] **Step 1: Append the failing tests**
 
 Append to `tests/unit/test_stt_ws.py`:
 
@@ -1611,13 +1611,13 @@ def test_a_blip_closes_without_a_transcript(monkeypatch: pytest.MonkeyPatch, ses
     assert client.get(f"/api/turns?session={session_token}").json()["turns"] == []
 ```
 
-- [ ] **Step 2: Run it and see it fail**
+- [x] **Step 2: Run it and see it fail**
 
 Run: `uv run pytest tests/unit/test_stt_ws.py -v`
 
 Expected: FAIL — exit code 1; `read_until` blocks on `turn_start` because the socket still only sends `ready` (the test times out / the websocket closes without the message).
 
-- [ ] **Step 3: Replace `src/sales_trainer/web/routes/stt_ws.py` with the complete file**
+- [x] **Step 3: Replace `src/sales_trainer/web/routes/stt_ws.py` with the complete file**
 
 ```python
 import asyncio
@@ -1728,19 +1728,19 @@ async def stt_socket(websocket: WebSocket, session: str = "") -> None:
         )
 ```
 
-- [ ] **Step 4: Run the tests**
+- [x] **Step 4: Run the tests**
 
 Run: `uv run pytest tests/unit/test_stt_ws.py -v`
 
 Expected: exit code 0; `5 passed`.
 
-- [ ] **Step 5: Lint**
+- [x] **Step 5: Lint**
 
 Run: `uv run ruff check .`
 
 Expected: exit code 0; `All checks passed!`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/sales_trainer/web/routes/stt_ws.py tests/unit/test_stt_ws.py
@@ -1756,7 +1756,7 @@ git commit -m "feat: transcribe finished turns over the stt socket"
 - Create: `tests/js/pcm_downsample.mjs`
 - Test: `tests/unit/test_pcm_downsample_js.py`
 
-- [ ] **Step 1: Write the failing node script and its pytest wrapper**
+- [x] **Step 1: Write the failing node script and its pytest wrapper**
 
 `tests/js/pcm_downsample.mjs`:
 
@@ -1827,13 +1827,13 @@ def test_pcm_downsample_script_passes() -> None:
     assert "pcm downsample ok" in result.stdout
 ```
 
-- [ ] **Step 2: Run it and see it fail**
+- [x] **Step 2: Run it and see it fail**
 
 Run: `uv run pytest tests/unit/test_pcm_downsample_js.py -v`
 
 Expected: FAIL — exit code 1; node reports `Cannot find module .../pcm.js`.
 
-- [ ] **Step 3: Create `src/sales_trainer/web/static/js/pcm.js`**
+- [x] **Step 3: Create `src/sales_trainer/web/static/js/pcm.js`**
 
 ```javascript
 // Pure PCM helpers shared by the audio worklet and the node test.
@@ -1878,13 +1878,13 @@ export class PcmFramer {
 }
 ```
 
-- [ ] **Step 4: Run the test**
+- [x] **Step 4: Run the test**
 
 Run: `uv run pytest tests/unit/test_pcm_downsample_js.py -v`
 
 Expected: exit code 0; `1 passed`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/sales_trainer/web/static/js/pcm.js tests/js/pcm_downsample.mjs tests/unit/test_pcm_downsample_js.py
@@ -1899,7 +1899,7 @@ git commit -m "feat: add pcm16 framing and downsampling helpers"
 - Create: `src/sales_trainer/web/static/js/pcm-worklet.js`
 - Create: `src/sales_trainer/web/static/js/mic.js`
 
-- [ ] **Step 1: Create `src/sales_trainer/web/static/js/pcm-worklet.js`**
+- [x] **Step 1: Create `src/sales_trainer/web/static/js/pcm-worklet.js`**
 
 ```javascript
 import { PcmFramer } from "./pcm.js";
@@ -1928,7 +1928,7 @@ class PcmWorklet extends AudioWorkletProcessor {
 registerProcessor("pcm-worklet", PcmWorklet);
 ```
 
-- [ ] **Step 2: Create `src/sales_trainer/web/static/js/mic.js`**
+- [x] **Step 2: Create `src/sales_trainer/web/static/js/mic.js`**
 
 ```javascript
 // Microphone to websocket: PCM16 mono 16 kHz frames of 512 samples (32 ms).
@@ -1981,7 +1981,7 @@ export async function startListening({ session, onMessage, onError }) {
 }
 ```
 
-- [ ] **Step 3: Verify both files are served**
+- [x] **Step 3: Verify both files are served**
 
 Run:
 
@@ -1997,13 +1997,13 @@ for path in ['/static/js/pcm.js', '/static/js/pcm-worklet.js', '/static/js/mic.j
 
 Expected: exit code 0; `200` for each of the three paths.
 
-- [ ] **Step 4: Lint**
+- [x] **Step 4: Lint**
 
 Run: `uv run ruff check .`
 
 Expected: exit code 0; `All checks passed!`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/sales_trainer/web/static/js/pcm-worklet.js src/sales_trainer/web/static/js/mic.js
@@ -2019,7 +2019,7 @@ git commit -m "feat: add microphone capture worklet and socket bridge"
 - Create: `src/sales_trainer/web/static/js/stt-debug.js`
 - Modify: `src/sales_trainer/web/app.py`
 
-- [ ] **Step 1: Create `src/sales_trainer/web/static/debug/stt.html`**
+- [x] **Step 1: Create `src/sales_trainer/web/static/debug/stt.html`**
 
 ```html
 <!doctype html>
@@ -2089,7 +2089,7 @@ git commit -m "feat: add microphone capture worklet and socket bridge"
 </html>
 ```
 
-- [ ] **Step 2: Create `src/sales_trainer/web/static/js/stt-debug.js`**
+- [x] **Step 2: Create `src/sales_trainer/web/static/js/stt-debug.js`**
 
 ```javascript
 import { startListening } from "./mic.js";
@@ -2172,7 +2172,7 @@ requestAnimationFrame(() => {
 });
 ```
 
-- [ ] **Step 3: Add the route to `src/sales_trainer/web/app.py`**
+- [x] **Step 3: Add the route to `src/sales_trainer/web/app.py`**
 
 Append after the `/debug/tts` handler:
 
@@ -2182,7 +2182,7 @@ async def debug_stt(session: str = "") -> HTMLResponse:
     return _page("debug/stt.html", session)
 ```
 
-- [ ] **Step 4: Verify the page and its scripts are served**
+- [x] **Step 4: Verify the page and its scripts are served**
 
 Run:
 
@@ -2200,7 +2200,7 @@ print('session registered', sessions.is_known('manual'))
 
 Expected: exit code 0; `/debug/stt 200`, `stt-debug.js 200`, `session registered True`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/sales_trainer/web/static/debug/stt.html src/sales_trainer/web/static/js/stt-debug.js src/sales_trainer/web/app.py
@@ -2214,7 +2214,7 @@ git commit -m "feat: add stt debug page"
 **Files:**
 - Create: `tests/e2e/test_stt_page.py`
 
-- [ ] **Step 1: Create the test**
+- [x] **Step 1: Create the test**
 
 ```python
 import os
@@ -2311,7 +2311,7 @@ def test_debug_stt_page_transcribes_a_turn_from_the_fake_microphone() -> None:
         proc.wait(timeout=10)
 ```
 
-- [ ] **Step 2: Run it**
+- [x] **Step 2: Run it**
 
 Run: `uv run pytest -m e2e -v`
 
@@ -2319,7 +2319,7 @@ Expected: exit code 0; `4 passed` (three Phase 1-2 e2e tests plus this one).
 
 If `window.sttDebug.turns.length > 0` times out, the fake microphone fed no speech: check that `tests/fixtures/hola-marta-16k.wav` is 16 kHz mono 16-bit (Task 3, Step 2) and that Chromium logs no `getUserMedia` error in `errors`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add tests/e2e/test_stt_page.py
@@ -2330,7 +2330,7 @@ git commit -m "test: add e2e coverage for stt turn detection and transcript"
 
 ## Task 19: Full suite and linter
 
-- [ ] **Step 1: Run everything**
+- [x] **Step 1: Run everything**
 
 Run: `uv run pytest -q`
 
@@ -2338,13 +2338,13 @@ Expected: exit code 0; `67 passed`.
 
 The count is: 30 pre-existing + 3 `test_vad.py` + 8 `test_turns.py` + 3 `test_stt_mock.py` + 10 `test_stt_providers.py` + 4 `test_sessions.py` + 1 added to `test_mcp_server.py` + 2 `test_turns_route.py` + 5 `test_stt_ws.py` + 1 `test_pcm_downsample_js.py` + 1 `test_stt_page.py`.
 
-- [ ] **Step 2: Lint**
+- [x] **Step 2: Lint**
 
 Run: `uv run ruff check .`
 
 Expected: exit code 0; `All checks passed!`.
 
-- [ ] **Step 3: Fix anything the two commands flag, then re-run both until green.**
+- [x] **Step 3: Fix anything the two commands flag, then re-run both until green.**
 
 Do not commit a red suite.
 
@@ -2356,7 +2356,7 @@ Do not commit a red suite.
 - Modify: `AGENTS.md`
 - Modify: `docs/decisions.md`
 
-- [ ] **Step 1: Update the status in `AGENTS.md`**
+- [x] **Step 1: Update the status in `AGENTS.md`**
 
 Before:
 
@@ -2372,7 +2372,7 @@ After:
 
 If Phase 4 is not the next phase in `MEMORY.md` when this runs, keep the Phase 3 wording out and write the phase that `MEMORY.md` names next; do not invent a topic.
 
-- [ ] **Step 2: Append the decision to `docs/decisions.md`**
+- [x] **Step 2: Append the decision to `docs/decisions.md`**
 
 ```markdown
 ## 2026-11-09 — Phase 3: Silero VAD on ONNX, faster-whisper as the default STT
@@ -2388,7 +2388,7 @@ If Phase 4 is not the next phase in `MEMORY.md` when this runs, keep the Phase 3
 - **Known limit:** no audio touches the disk and `SAVE_AUDIO` stays unimplemented until the configuration phase; the only committed audio is `tests/fixtures/hola-marta-16k.wav`.
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add AGENTS.md docs/decisions.md

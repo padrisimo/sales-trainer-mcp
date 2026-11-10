@@ -68,5 +68,5 @@ Never cut: validation at trust boundaries, error handling that prevents data los
 
 **Status**
 
-- Current phase: 3 (microphone, VAD and STT). In progress: microphone capture, VAD and STT with timestamps.
+- Current phase: 4 (characters, LLM and evaluation). In progress: character dialogue and the success gauge.
 - Update here when closing each phase.
