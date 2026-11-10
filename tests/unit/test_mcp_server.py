@@ -1,6 +1,7 @@
 import pytest
 
 from sales_trainer import mcp_server
+from sales_trainer.web import sessions
 
 
 def test_build_url_uses_local_host_and_token() -> None:
@@ -29,3 +30,12 @@ def test_stop_is_safe_when_server_is_down(monkeypatch: pytest.MonkeyPatch) -> No
     monkeypatch.setattr(mcp_server, "_server", None)
     monkeypatch.setattr(mcp_server, "_thread", None)
     assert mcp_server.stop() == {"running": False}
+
+
+def test_start_registers_the_session_token(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(mcp_server, "_ensure_server", lambda: None)
+    monkeypatch.setattr(mcp_server.webbrowser, "open", lambda url: True)
+
+    result = mcp_server.start(level=1, product_brief=None, language="es")
+
+    assert sessions.is_known(result["session_id"]) is True
