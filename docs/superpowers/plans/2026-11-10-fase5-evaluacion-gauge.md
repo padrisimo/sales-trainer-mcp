@@ -77,7 +77,7 @@ Task 2: Write the mock judge provider that returns deterministic JSON scores and
 
 - [x] Task 3: Implement the temperature model — update formula, inertia, moving average, win/lose conditions.
 
-Task 4: Build the evaluation rubric — `rubric.py` (8 dimensions with Spanish notes) and `builder.py` (build judge system prompt from transcript, product brief).
+- [x] Task 4: Build the evaluation rubric — rubric.py (8 dimensions with Spanish notes) and builder.py (build judge system prompt from transcript, product brief).
 
 Task 5: Integrate judge into `chat.py` — after `turn_end`, call judge in a worker thread, update temperature, store the cause.
 
