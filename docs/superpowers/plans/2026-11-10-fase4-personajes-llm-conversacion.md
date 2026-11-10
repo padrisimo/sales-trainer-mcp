@@ -40,7 +40,7 @@
 - Modify: `pyproject.toml`
 - Modify: `uv.lock`
 
-- [ ] **Step 1: Add the dependency**
+- [x] **Step 1: Add the dependency**
 
 Run:
 
@@ -50,7 +50,7 @@ uv add pyyaml
 
 Expected: exit code 0; `uv` prints `Resolved N packages` and `Installed 1 package`, and `pyproject.toml` gains `"pyyaml>=6.0.3"` (or a later `>=` pin) under `dependencies`.
 
-- [ ] **Step 2: Verify the import and the version**
+- [x] **Step 2: Verify the import and the version**
 
 Run:
 
@@ -60,13 +60,13 @@ uv run python -c "import yaml; print('pyyaml', yaml.__version__); print(yaml.saf
 
 Expected: exit code 0; `pyyaml 6.0.x` and `{'nivel': 1}`.
 
-- [ ] **Step 3: Confirm the suite is still green**
+- [x] **Step 3: Confirm the suite is still green**
 
 Run: `uv run pytest -q`
 
 Expected: exit code 0; `68 passed`.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add pyproject.toml uv.lock
