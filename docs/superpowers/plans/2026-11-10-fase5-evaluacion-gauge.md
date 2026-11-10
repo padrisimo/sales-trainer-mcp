@@ -1,6 +1,5 @@
 # Phase 5: Evaluation engine (judge + delivery) and temperature Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers-subagent-driven-development (recommended) or superpowers-executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add an LLM judge that evaluates each user turn for content and persuasion, measure delivery signals (diction, intonation, pace, fluency, eloquence), and update the character's temperature accordingly. The gauge reacts turn by turn with explained causes. Win/loss conditions based on reaching/holding threshold or temperature 0.
 
@@ -72,7 +71,7 @@
 
 Tasks 1-3 lay the ground: `config/scoring.yaml` and the judge package (`base`, `mock`, `factory`) with tests. Tasks 4-6 build the temperature model and its integration with `chat.py` and the socket. Tasks 7-9 prove the whole path end to end with mock providers over the fake microphone, with gauge messages on the socket and win/lose conditions. Tasks 10-12 run the full suite and linter, close the phase in `docs/decisions.md` and `AGENTS.md`, and record what was not proven.
 
-Task 1: Add `config/scoring.yaml` and the judge package skeleton with pydantic models for the 8-dimensional rubric and the temperature update formula.
+- [x] Task 1: Add  and the judge package skeleton with pydantic models for the 8-dimensional rubric and the temperature update formula.
 
 Task 2: Write the mock judge provider that returns deterministic JSON scores and delivery signals.
 
