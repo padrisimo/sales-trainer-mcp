@@ -64,7 +64,10 @@ def test_whisper_failure_raises_unavailable() -> None:
         provider.transcribe(b"\x00\x00" * 16000)
 
 
-def test_azure_requires_credentials() -> None:
+def test_azure_requires_credentials(monkeypatch: pytest.MonkeyPatch) -> None:
+    # An empty argument means "fall back to the environment", so clear it too.
+    monkeypatch.delenv("AZURE_SPEECH_KEY", raising=False)
+    monkeypatch.delenv("AZURE_SPEECH_REGION", raising=False)
     with pytest.raises(STTUnavailable):
         AzureSTTProvider(key="", region="")
 

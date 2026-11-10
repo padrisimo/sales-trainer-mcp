@@ -45,6 +45,7 @@ Never cut: validation at trust boundaries, error handling that prevents data los
 - No CDN at runtime. Audio is not stored unless `SAVE_AUDIO=true`.
 - The `.txt` report is always generated, and when it is missing it explains why.
 - Dependency versions pinned. Do not invent APIs: consult the documentation.
+- Azure keys live in `.env` at the repository root; `sales_trainer` loads it on import and a real environment variable always wins.
 
 **Commands**
 

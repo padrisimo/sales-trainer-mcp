@@ -1810,6 +1810,7 @@ dependencies = [
     { name = "numpy", version = "2.5.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "onnxruntime" },
     { name = "pydantic" },
+    { name = "python-dotenv" },
     { name = "uvicorn", extra = ["standard"] },
 ]
 
@@ -1831,6 +1832,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=2.4.6" },
     { name = "onnxruntime", specifier = ">=1.31.1" },
     { name = "pydantic", specifier = ">=2.14.2" },
+    { name = "python-dotenv", specifier = ">=1.2.4" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.54.0" },
 ]
 
