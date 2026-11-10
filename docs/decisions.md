@@ -46,3 +46,26 @@
 - **Known limit:** the fixture was synthesized with the macOS `say` voice Mónica and converted to 16 kHz mono by `afconvert` instead of Azure TTS, because no Azure key was configured in this session; it is still real Spanish speech, and no key or network is needed to run the suite.
 - **Known limit:** the fake microphone e2e runs only the mock transcriber; both real engines were checked on the committed fixture, but real room noise and microphone levels are still a manual check.
 - **Known limit:** no audio touches the disk and `SAVE_AUDIO` stays unimplemented until the configuration phase; the only committed audio is `tests/fixtures/hola-marta-16k.wav`.
+
+## Phase 4 — characters, LLM and the conversation loop (closed 2026-11-10)
+
+- Spec: `docs/superpowers/specs/2026-11-10-fase4-personajes-llm-conversacion-design.md`
+- Plan: `docs/superpowers/plans/2026-11-10-fase4-personajes-llm-conversacion.md`
+- Implementation status: 79 unit/integration tests green, 5 e2e tests planned (mock-only), `ruff` clean (known `RUF013` unresolved — `Optional` syntax consistent with Phase 3).
+- Decisions recorded:
+  1. Criterion 7 split: call-time `LLMUnavailable` → `error{llm}` recoverable; provider-unbuildable at connect → `error{llm_config}` + close.
+  2. TTS also in `asyncio.to_thread` to avoid freezing the receive loop / blocking barge-in.
+  3. `begin()` creates Exchange before awaiting provider, so barge-in has something to mark.
+  4. New turn or `barge_in` cancels running reply task.
+  5. `product_brief` from MCP tool outside this phase (Phase 6).
+  6. `sentences: list[str]` derived, count used for `audio` ordering and `played`.
+  7. `exchange` id in `reply`/`audio` messages; client drops stale audio.
+  8. `SALES_TRAINER_LLM_TIMEOUT` (30 s) in config table and both clients.
+  9. `complete()` declared sync; socket runs it in a worker thread.
+  10. Fixed abbreviation list (`Sr. Sra. Dr. Ud. Uds. p. ej. EE. UU.`) for `split_sentences`.
+  11. Missing/`out-of-range level` rejected with `code{"level"}`.
+- Known limits / unverified:
+  - Anthropic client only tested against `httpx.MockTransport` (no real key).
+  - No real model has answered a turn yet (suite uses `mock` by default).
+  - `characters/` and `.env` live outside the wheel; documented known limit.
+- Close-out: `AGENTS.md` status moved to Phase 5.

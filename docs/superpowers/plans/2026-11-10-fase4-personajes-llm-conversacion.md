@@ -584,7 +584,7 @@ git commit -m "feat: add the llm protocol and a deterministic mock"
 - Create: `src/sales_trainer/llm/openai_compat.py`
 - Test: `tests/unit/test_llm.py`
 
-- [ ] **Step 1: Replace the import block and append the failing tests**
+- [x] **Step 1: Replace the import block and append the failing tests**
 
 In `tests/unit/test_llm.py`, replace the import block with:
 
@@ -704,13 +704,13 @@ def test_openai_non_json_body_becomes_unavailable() -> None:
         provider.complete("s", [Message(role="user", content="hola")])
 ```
 
-- [ ] **Step 2: Run it and see it fail**
+- [x] **Step 2: Run it and see it fail**
 
 Run: `uv run pytest tests/unit/test_llm.py -v`
 
 Expected: FAIL — exit code 1, `ModuleNotFoundError: No module named 'sales_trainer.llm.openai_compat'`.
 
-- [ ] **Step 3: Create `src/sales_trainer/llm/openai_compat.py`**
+- [x] **Step 3: Create `src/sales_trainer/llm/openai_compat.py`**
 
 ```python
 import os
@@ -768,19 +768,19 @@ class OpenAICompatProvider:
 
 `httpx.HTTPError` covers timeouts and non-2xx responses; `ValueError` covers a body that is not JSON; `KeyError`/`IndexError`/`TypeError` cover a JSON body of the wrong shape. No blind `except Exception`, so `BLE001` stays clean.
 
-- [ ] **Step 4: Run the tests**
+- [x] **Step 4: Run the tests**
 
 Run: `uv run pytest tests/unit/test_llm.py -v`
 
 Expected: exit code 0; `11 passed` (2 from Task 4 plus 9 here).
 
-- [ ] **Step 5: Lint**
+- [x] **Step 5: Lint**
 
 Run: `uv run ruff check .`
 
 Expected: exit code 0; `All checks passed!`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/sales_trainer/llm/openai_compat.py tests/unit/test_llm.py
@@ -795,7 +795,7 @@ git commit -m "feat: add the openai-compatible llm provider"
 - Create: `src/sales_trainer/llm/anthropic.py`
 - Test: `tests/unit/test_llm.py`
 
-- [ ] **Step 1: Replace the import block and append the failing tests**
+- [x] **Step 1: Replace the import block and append the failing tests**
 
 In `tests/unit/test_llm.py`, replace the import block with:
 
@@ -872,13 +872,13 @@ def test_anthropic_without_a_text_block_becomes_unavailable() -> None:
         provider.complete("s", [Message(role="user", content="hola")])
 ```
 
-- [ ] **Step 2: Run it and see it fail**
+- [x] **Step 2: Run it and see it fail**
 
 Run: `uv run pytest tests/unit/test_llm.py -v`
 
 Expected: FAIL — exit code 1, `ModuleNotFoundError: No module named 'sales_trainer.llm.anthropic'`.
 
-- [ ] **Step 3: Create `src/sales_trainer/llm/anthropic.py`**
+- [x] **Step 3: Create `src/sales_trainer/llm/anthropic.py`**
 
 ```python
 import os
@@ -938,13 +938,13 @@ class AnthropicProvider:
         return content.strip()
 ```
 
-- [ ] **Step 4: Run the tests**
+- [x] **Step 4: Run the tests**
 
 Run: `uv run pytest tests/unit/test_llm.py -v`
 
 Expected: exit code 0; `16 passed` (11 after Task 5 plus 5 here).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/sales_trainer/llm/anthropic.py tests/unit/test_llm.py
