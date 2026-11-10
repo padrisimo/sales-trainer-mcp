@@ -69,3 +69,30 @@
   - No real model has answered a turn yet (suite uses `mock` by default).
   - `characters/` and `.env` live outside the wheel; documented known limit.
 - Close-out: `AGENTS.md` status moved to Phase 5.
+
+## Phase 5 — Evaluation engine (judge + delivery) and temperature (closed 2026-11-10)
+
+- Spec: (Phase 5 spec not yet written as a separate design doc; decisions recorded below)
+- Plan: `docs/superpowers/plans/2026-11-10-fase5-evaluacion-gauge.md`
+- Implementation status: 95 unit/integration tests green, `uv run ruff check .` clean (RUF013 `Optional` warning consistent with Phase 3 codebase). Phase 5 implemented bottom-up: config/scoring.yaml → judge package (mock + factory) → TemperatureModel → rubric + builder → chat.py integration (call_judge_for_exchange) → /ws/chat gauge message. All judge/LLM calls run via `get_judge_provider("mock")` so the suite never touches network.
+
+- Decisions recorded:
+  1. Judge `complete` is sync; socket runs it in `asyncio.to_thread` / `call_judge_for_exchange` so a slow model blocks only that turn, not the receive loop / barge-in.
+  2. Delivery signals (diction, intonation, pace, filler words) come from the STT provider's word probabilities and timing, never invented by the judge.
+  3. Temperature formula: `delta = (turn_score - 50) / 50 × character_sensitivity × max_delta`, with `max_delta` default 15, per-level sensitivity from config/scoring.yaml, moving average window default 3, min_delta default 1 to avoid jitter.
+  4. Bounds: temperature clamped to [0, 100]; 0 = character hangs up (defeat); reaching threshold for 2 consecutive turns = victory.
+  5. The judge prompt (built by `builder.build_judge_system_prompt`) states the character never reveals score or temperature, and knows only what the seller told it (the product brief).
+  6. The judge is called once per user turn, after `turn_end` and before the next `turn_start`; its `cause` string is shown in the gauge UI.
+  7. `get_judge_provider("mock")` returns a deterministic `JudgeResult` with 8 scores 0-10 and a cause string; the real provider would be `openai-compatible` with the proper rubric prompt; no real model has been called yet in the suite.
+  8. Win condition: temperature ≥ threshold for two consecutive turns (or character accepts a next step). Lose: temperature 0 (hangs up), turns exhausted, or time exhausted.
+  9. The gauge message on `/ws/chat` has type `gauge` with fields `temperature` (0-100), `cause` (string), and optionally `win`/`lost` booleans.
+  10. The `product_brief` fed to the judge comes from `?product=` in the debug page; the MCP `product_brief` argument is outside Phase 5 (Phase 6).
+
+- Known limits / unverified:
+  - No real model has answered a judge call yet (suite uses `mock` by default).
+  - Delivery signal parsing from STT result assumes `faster-whisper` `small` int8 output format; alternative models may need a parser adapter.
+  - `config/scoring.yaml` weights are defined per level but first real values are a manual step.
+  - The gauge UI (React/JS frontend) is outside this phase's scope; only the backend state and `/debug/gauge` endpoint (if implemented) are included.
+  - The `?product=` debug page feeds the judge; the full MCP tool page (Phase 6) would feed it differently.
+
+- Close-out: `AGENTS.md` status moved to Phase 6.

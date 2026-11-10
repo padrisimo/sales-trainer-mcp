@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Sequence
+from typing import Sequence
 
 
 class Message:
@@ -14,6 +14,26 @@ class Message:
     def __init__(self, role: str, content: str) -> None:
         self.role = role
         self.content = content
+
+
+class JudgeResult:
+    """Result of a judge call.
+
+    Attributes:
+        scores: dict mapping dimension name (str) to int 0-10
+        delivery: dict with measured signals (diction, intonation, pace, fluency, eloquence)
+        cause: natural language explanation of the result (for the gauge UI)
+    """
+
+    def __init__(
+        self,
+        scores: dict[str, int],
+        delivery: dict[str, object | float | int | None] | None = None,
+        cause: str | None = None,
+    ) -> None:
+        self.scores = scores
+        self.delivery = delivery or {}
+        self.cause = cause
 
 
 class LLMProvider:

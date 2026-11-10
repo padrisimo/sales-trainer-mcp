@@ -69,5 +69,5 @@ Never cut: validation at trust boundaries, error handling that prevents data los
 
 **Status**
 
-- Current phase: 5 (conversation loop and barge-in). Closed: Phase 4 characters, LLM and conversation loop.
+- Current phase: 6 (evaluation, gauge and temperature). Closed: Phase 5 evaluation engine and temperature.
 - Update here when closing each phase.

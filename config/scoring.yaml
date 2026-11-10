@@ -1,0 +1,62 @@
+# Evaluation weights and thresholds per level
+# These determine how much each dimension contributes to the turn score,
+# and how the temperature is updated.
+
+# Dimension indices (used in the rubric JSON):
+# 0: value proposition
+# 1: quantified time savings
+# 2: quantified money savings
+# 3: objection handling
+# 4: questions and personalization
+# 5: structure and clarity
+# 6: closing or call to action
+# 7: persuasive devices (story, social proof, before/after contrast, figures)
+
+# Level-specific weights (sum to 1.0 per level)
+weights:
+  level_1:  # Marta — receptive, easy
+    - value proposition: 0.15
+    - quantified time savings: 0.10
+    - quantified money savings: 0.10
+    - objection handling: 0.10
+    - questions and personalization: 0.15
+    - structure and clarity: 0.15
+    - closing or call to action: 0.15
+    - persuasive devices: 0.10
+  level_2:  # Javier — skeptical, medium
+    - value proposition: 0.12
+    - quantified time savings: 0.12
+    - quantified money savings: 0.12
+    - objection handling: 0.15
+    - questions and personalization: 0.13
+    - structure and clarity: 0.13
+    - closing or call to action: 0.13
+    - persuasive devices: 0.10
+  level_3:  # Carmen — uninterested, hard
+    - value proposition: 0.10
+    - quantified time savings: 0.15
+    - quantified money savings: 0.15
+    - objection handling: 0.15
+    - questions and personalization: 0.10
+    - structure and clarity: 0.10
+    - closing or call to action: 0.15
+    - persuasive devices: 0.10
+
+# Temperature parameters
+temperature:
+  max_delta: 15              # ±15 per turn
+  sensitivity:               # per level, multiplier of (score-50)/50
+    level_1: 1.0
+    level_2: 1.2
+    level_3: 1.5
+  moving_average_window: 3   # number of previous turns to average over
+  min_delta: 1               # smallest absolute change per turn
+
+# Win/lose conditions
+win_lose:
+  # Victory: reach threshold and hold for N turns
+  hold_for: 2                # two consecutive turns above threshold
+  # Defeat: temperature 0 (character hangs up)
+  temperature_zero_defeat: true
+  # Defeat: turns exhausted
+  max_turns_defeat: true
