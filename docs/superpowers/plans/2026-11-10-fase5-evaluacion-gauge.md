@@ -75,7 +75,7 @@ Tasks 1-3 lay the ground: `config/scoring.yaml` and the judge package (`base`, `
 
 Task 2: Write the mock judge provider that returns deterministic JSON scores and delivery signals.
 
-Task 3: Implement the temperature model — update formula, inertia, moving average, win/lose conditions.
+- [x] Task 3: Implement the temperature model — update formula, inertia, moving average, win/lose conditions.
 
 Task 4: Build the evaluation rubric — `rubric.py` (8 dimensions with Spanish notes) and `builder.py` (build judge system prompt from transcript, product brief).
 
