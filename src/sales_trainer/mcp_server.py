@@ -8,6 +8,7 @@ import uvicorn
 from mcp.server.mcpserver import MCPServer
 
 from sales_trainer.web.app import app
+from sales_trainer.web.sessions import register
 
 mcp = MCPServer(name="sales-trainer")
 
@@ -37,6 +38,7 @@ def _ensure_server() -> uvicorn.Server:
 @mcp.tool(name="sales_trainer_start", description="Arranca el servidor web local y abre el navegador")
 def start(level: int = 1, product_brief: str | None = None, language: str = "es") -> dict[str, str]:
     token = str(uuid.uuid4())
+    register(token)  # the socket only accepts tokens the server issued or served
     url = build_url(port=PORT, token=token)
     _ensure_server()
     webbrowser.open(url)

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sales Trainer — STT</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #101418;
+        color: #e6edf3;
+        font: 13px system-ui, sans-serif;
+      }
+      body {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+      }
+      #controls {
+        padding: 12px;
+        background: #171d24;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      button {
+        padding: 10px;
+        border: 1px solid #2c3642;
+        border-radius: 6px;
+        background: #2a3542;
+        color: inherit;
+        cursor: pointer;
+      }
+      #level {
+        width: 100%;
+        height: 12px;
+      }
+      #turns {
+        margin: 0;
+        padding: 12px;
+        overflow-y: auto;
+      }
+      #turns li {
+        margin-bottom: 8px;
+        line-height: 1.5;
+      }
+      .words {
+        color: #8b98a5;
+      }
+    </style>
+  </head>
+  <body>
+    <section id="controls">
+      <button id="start" type="button">Escuchar</button>
+      <button id="stop" type="button">Parar</button>
+      <label for="level">Nivel (probabilidad del VAD)</label>
+      <progress id="level" max="1" value="0"></progress>
+      <p id="status">listo</p>
+      <p>El navegador envía PCM16 mono a 16 kHz; el servidor corta los turnos con Silero VAD y transcribe solo el turno terminado.</p>
+    </section>
+    <ol id="turns"></ol>
+    <script type="module" src="/static/js/stt-debug.js"></script>
+  </body>
+</html>
