@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Niveles - Sales Trainer MCP</title>
+  <link rel="stylesheet" href="/static/css/levels.css">
+</head>
+<body>
+  <h1>Elige un nivel</h1>
+  <div class="level-cards">
+    <div class="card" data-level="1" data-name="Marta" data-threshold="75" data-max-turns="10">
+      <h3>Marta (Nivel 1)</h3>
+      <p>Directora de operaciones, receptiva</p>
+      <p>Temp inicial: 50 | Umbral: 75 | Max turns: 10</p>
+    </div>
+    <div class="card" data-level="2" data-name="Javier" data-threshold="80" data-max-turns="10">
+      <h3>Javier (Nivel 2)</h3>
+      <p>Manager escéptico</p>
+      <p>Temp inicial: 30 | Umbral: 80 | Max turns: 10</p>
+    </div>
+    <div class="card" data-level="3" data-name="Carmen" data-threshold="85" data-max-turns="8">
+      <h3>Carmen (Nivel 3)</h3>
+      <p>CFO poco interesada</p>
+      <p>Temp inicial: 10 | Umbral: 85 | Max turns: 8</p>
+    </div>
+  </div>
+  <div id="gauge-container" style="margin-top:2rem;">
+    <canvas id="gauge-canvas" width="200" height="200"></canvas>
+    <div id="gauge-info" style="margin-top:0.5rem;"></div>
+  </div>
+  <button id="retry-btn" style="margin-top:1rem; display:none;">Reintentar</button>
+  <div id="report-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); color:#fff; padding:2rem;">
+    <pre id="report-text" style="white-space:pre-wrap; font-family:monospace;"></pre>
+    <button id="close-report" style="position:absolute; top:1rem; right:1rem;">Cerrar</button>
+  </div>
+  <script src="/static/js/levels.js"></script>
+</body>
+</html>
