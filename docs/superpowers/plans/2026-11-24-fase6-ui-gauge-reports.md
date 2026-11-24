@@ -64,7 +64,7 @@
 
 Tasks 1-3 lay the ground: the levels route (`/debug/levels`), the HTML page with cards, and the JS that wires the card click to `/ws.chat`. Tasks 4-6 build the report generation, the gauge UI integration on the socket, and the retry mechanic. Tasks 7-9 prove the whole path end to end over the fake microphone with only the providers doubled. Tasks 10-12 run the full suite and linter, close the phase in `docs/decisions.md` and `AGENTS.md`, and record what was not proven.
 
-Task 1: Add the levels route and serve `/debug/levels` — new file `src/sales_trainer/web/routes/levels.py`, modify `src/sales_trainer/web/app.py`.
+- [x] Task 1: Add the levels route and serve /debug/levels — new file src/sales_trainer/web/routes/levels.py, modify src/sales_trainer/web/app.py.
 
 Task 2: Create the HTML page and JS — new files `src.sales_trainer.web.static.levels.html`, `src.sales_trainer.web.static.js.levels.js`, `src.sales_trainer.web.static.js.levels-debug.js`.
 
