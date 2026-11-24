@@ -61,4 +61,4 @@ Complete. All features implemented and tested. Documentation closed.
 
 ## License
 
-Proprietary
+MIT License
